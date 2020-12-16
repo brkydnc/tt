@@ -122,7 +122,7 @@ function main(term, delay) {
   timeout = setTimeout(async () => {
     const doc = await fetchDocument(term);
     const { status, value } = crawl(doc);
-    display(status, value).catch(e => console.log(e));
+    display(status, value);
   }, delay);
 }
 
