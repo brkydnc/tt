@@ -1,51 +1,7 @@
-const domParser = new DOMParser();
 const input = document.getElementById("input");
 const output = document.getElementById("output");
 
-async function fetchDocument(term) {
-  const res = await fetch('https://tureng.com/en/turkish-english/' + term);
-  const text = await res.text();
-  const doc = domParser.parseFromString(text, 'text/html');
-  return doc;
-}
-
-function crawl(doc) {
-  const [searchResults] = doc.getElementsByClassName("tureng-searchresults-content");
-  const termFound = !searchResults.classList.contains("tureng-page-suggest");
-
-  let status = 0, value = [];
-  if (termFound) {
-    const [...tableBodies] = searchResults.getElementsByTagName("tbody");
-    value = tableBodies
-      .map(body =>
-        [...body.children]
-          .slice(1)
-          .filter(tr => tr.attributes.length === 0)
-          .map(tr => 
-            [...tr.children]
-              .splice(0, 4)
-              .map(td => td.textContent.replace(/\s+/g, ' ').trim())
-          )
-      );
-  }
-  
-  const [feedback] = searchResults.getElementsByTagName("h1");
-  switch (feedback.textContent) {
-    case "Maybe the correct one is":
-      status = 2;
-      const [suggestions] = searchResults.getElementsByClassName('suggestion-list');
-      const [...listElements] = suggestions.getElementsByTagName('li');
-      const terms = listElements.map(li => li.firstElementChild.textContent);
-      value = terms;
-      break;
-    case "Term not found":
-      status = 1; break;
-  }
-
-  return { status, value }
-}
-
-function display(status, value) {
+function display({status, value}) {
   let result;
   switch(status) {
     case 0:
@@ -118,16 +74,15 @@ function produceSuggestion(terms) {
 
 let timeout;
 function main(term, delay) {
-  clearTimeout(timeout)
-  timeout = setTimeout(async () => {
-    const doc = await fetchDocument(term);
-    const { status, value } = crawl(doc);
-    display(status, value);
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    browser.runtime.sendMessage(term)
+      .then(display, (e) => console.log(e))
   }, delay);
 }
 
 input.addEventListener('input', e => {
   const value = e.target.value;
   if (!value) return;
-  main(value, 200);
+  main(value.trim(), 200);
 })
