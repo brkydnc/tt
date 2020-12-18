@@ -15,5 +15,13 @@
   },
  "background": {
     "scripts": ["background.js"]
+  },
+  "commands": {
+    "open-popup": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Space"
+      },
+      "description": "Open popup"
+    }
   }
 }

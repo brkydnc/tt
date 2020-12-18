@@ -48,3 +48,7 @@ browser.runtime.onMessage.addListener((term, _, sendResponse) => {
   fetchDocument(term) .then(doc => sendResponse(scrape(doc)));
   return true;
 });
+
+browser.commands.onCommand.addListener((name) => {
+  if (name === "open-popup") browser.browserAction.openPopup();
+});

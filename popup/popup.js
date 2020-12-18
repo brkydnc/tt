@@ -86,3 +86,5 @@ input.addEventListener('input', e => {
   if (!value) return;
   main(value.trim(), 200);
 })
+
+input.focus();
