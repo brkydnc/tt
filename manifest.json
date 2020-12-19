@@ -23,5 +23,10 @@
       },
       "description": "Open popup"
     }
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "berkayydinc@gmail.com"
+    }
   }
 }
