@@ -1,29 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+
 * {
   margin: 0;
   padding: 0;
+  font-family: "Noto Sans";
+  outline: none;
+  border: none;
+}
+
+body {
+  background: #303030;
 }
 
 #input {
-  width: 200px;
-  height: 100px;
-
-  margin: .5rem;
-  padding: .2rem;
-
-  resize: none;
-  overflow: auto;
-
-  border: 1px solid gray;
-}
-
-#output {
-  padding-top: .5rem;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 180px;
+  padding: .3rem;
+  position: sticky;
+  top:0;
+  border-bottom: 2px solid #bf1e2e;
   font-size: .8rem;
-
-  margin: .5rem;
-  padding: .2rem;
+  color: #f5f5f5;
+  background: #454545;
 }
 
-.suggestion-list {
-  list-style-position: inside;
+#output {}
+
+.table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: .8rem;
+  word-wrap: break-word;
+}
+
+.table-body { }
+.table-row {
+  color: #f5f5f5;
+  background: #454545;
+  border: 1px solid #272727;
+}
+
+.table-row > * {
+  max-width: 180px;
+  padding: .1rem .5rem;
+}
+
+.table-row:nth-child(odd) {
+  background: #303030;
+}
+
+.table-row > :nth-child(1) {}
+.table-row > :nth-child(2) {}
+.table-row > :nth-child(3) {}
+.table-row > :nth-child(4) {}
+
+.suggestion-container {
+  font-size: .8rem;
+  color: #f5f5f5;
+  background: #303030;
+  padding: .3rem;
+}
+.suggestion-header {}
+.suggestion-list { list-style-position: inside; }
+
+.suggestion:hover, .suggestion:focus {
+  background: #454545;
+  cursor: pointer;
+}
+.suggestion::marker {
+  font-weight: bold;
+}
+
+.not-found {
+  font-size: .8rem;
+  color: #f5f5f5;
+  padding: .3rem;
 }

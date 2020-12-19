@@ -8,8 +8,9 @@ function display({status, value}) {
       result = produceTable(value);
       break;
     case 1:
-      const element = document.createElement('p');
+      const element = document.createElement('h4');
       const text = document.createTextNode("Term not found.");
+      element.className = "not-found"
       element.appendChild(text);
       result = element;
       break;
@@ -20,29 +21,31 @@ function display({status, value}) {
 
   output.innerHTML = '';
   output.appendChild(result);
+  input.focus();
 }
 
-function produceTable(table) {
+function produceTable(rows) {
   const tableElement = document.createElement('table');
-  table
-    .map(body => {
-      const tbody = document.createElement('tbody');
-      body
-        .map((content) => {
-          const tr = document.createElement('tr');
-          content.forEach(item => {
-            const td = document.createElement('td');
-            const text = document.createTextNode(item);
-            td.className = ''
-            td.appendChild(text);
-            tr.appendChild(td);
-          })
-          return tr;
-        })
-        .forEach(tr => { tbody.appendChild(tr); })
-      return tbody;
+  tableElement.className = "table";
+  const tbody = document.createElement('tbody');
+  tbody.className = "table-body"
+
+  tableElement.appendChild(tbody);
+
+  rows
+    .map((content) => {
+      const tr = document.createElement('tr');
+      tr.className = "table-row"
+      content.forEach(item => {
+        const td = document.createElement('td');
+        const text = document.createTextNode(item);
+        td.appendChild(text);
+        tr.appendChild(td);
+      })
+      return tr;
     })
-    .forEach(tbody => { tableElement.appendChild(tbody); });
+    .forEach(tr => { tbody.appendChild(tr); })
+
   return tableElement;
 }
 
@@ -55,17 +58,22 @@ function produceSuggestion(terms) {
   terms.forEach(term => {
     const li = document.createElement('li');
     const text = document.createTextNode(term);
+    li.setAttribute('tabindex', '0')
+    li.className = "suggestion";
     li.appendChild(text);
     li.onclick = () => handle(term);
+    li.onkeyup = (e) => { if (e.key === "Enter") handle(term) };
 
     ol.appendChild(li);
   });
 
   const feedback = document.createElement('h4');
   const text = document.createTextNode("Maybe the correct one is:");
+  feedback.className = "suggestion-header";
   feedback.appendChild(text);
 
   const container = document.createElement('div');
+  container.className = "suggestion-container";
   container.appendChild(feedback);
   container.appendChild(ol);
 

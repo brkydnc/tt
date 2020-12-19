@@ -22,10 +22,11 @@ function scrape(doc) {
         .filter(tr => tr.attributes.length === 0)
         .map(tr => 
           [...tr.children]
-          .splice(0, 4)
+          .splice(1, 4)
           .map(td => td.textContent.replace(/\s+/g, ' ').trim())
         )
-      );
+      )
+      .flat();
   }
 
   const [feedback] = searchResults.getElementsByTagName("h1");
