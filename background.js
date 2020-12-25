@@ -45,11 +45,55 @@ function scrape(doc) {
   return { status, value };
 }
 
-browser.runtime.onMessage.addListener((term, _, sendResponse) => {
-  fetchDocument(term) .then(doc => sendResponse(scrape(doc)));
-  return true;
+const popup = {
+  port: null,
+  openedWith: "",
+  selectionRegister: "",
+  setPort: function(port) {
+    this.port = port;
+    this.onConnect();
+  },
+  onConnect: function translateInPopup() {
+    if (this.openedWith !== "translate-in-popup") return;
+    this.port.postMessage({
+      op: "translateInPopup",
+      value: this.selectionRegister,
+    });
+  }
+};
+
+browser.runtime.onConnect.addListener(port => {
+  switch (port.name) {
+    case "popup":
+      port.onMessage.addListener(msg => {
+        if (msg.op === "translate")
+          fetchDocument(msg.value).then(doc => port.postMessage({
+            op: "displayTranslation",
+            value: scrape(doc),
+          }));
+      });
+      popup.setPort(port);
+      break;
+
+    case "content":
+      port.onMessage.addListener(msg => {
+        if (msg.op === "registerSelection")
+          popup.selectionRegister = msg.value;
+      });
+      break;
+  }
 });
 
 browser.commands.onCommand.addListener((name) => {
-  if (name === "open-popup") browser.browserAction.openPopup();
+  popup.openedWith = name;
+  switch (name) {
+    case "open-popup":
+      browser.browserAction.openPopup();
+      break;
+
+    case "translate-in-popup":
+      if (!popup.selectionRegister) break;
+      browser.browserAction.openPopup();
+      break;
+  }
 });

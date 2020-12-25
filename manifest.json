@@ -13,15 +13,27 @@
     "default_title": "Tureng Translate",
     "default_popup": "popup/popup.html"
   },
- "background": {
+  "background": {
     "scripts": ["background.js"]
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
   "commands": {
     "open-popup": {
       "suggested_key": {
         "default": "Ctrl+Shift+Space"
       },
       "description": "Open popup"
+    },
+    "translate-in-popup": {
+      "suggested_key": {
+        "default": "Ctrl+Space"
+      },
+      "description": "Translate selected text in popup"
     }
   },
   "browser_specific_settings": {

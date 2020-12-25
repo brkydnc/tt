@@ -84,15 +84,31 @@ let timeout;
 function main(term, delay) {
   clearTimeout(timeout);
   timeout = setTimeout(() => {
-    browser.runtime.sendMessage(term)
-      .then(display, (e) => console.log(e))
+    port.postMessage({
+      op: "translate",
+      value: term,
+    });
   }, delay);
 }
 
+const port = browser.runtime.connect({name: "popup"});
+port.onMessage.addListener((msg) => {
+  switch (msg.op) {
+    case "displayTranslation":
+      display(msg.value);
+      break;
+
+    case "translateInPopup":
+      input.value = msg.value;
+      main(msg.value, 0);
+      break;
+  }
+});
+
 input.addEventListener('input', e => {
-  const value = e.target.value;
+  const value = e.target.value.trim();
   if (!value) return;
-  main(value.trim(), 200);
+  main(value, 200);
 })
 
 input.focus();
