@@ -84,20 +84,16 @@ let timeout;
 function main(term, delay) {
   clearTimeout(timeout);
   timeout = setTimeout(() => {
-    port.postMessage({
+    browser.runtime.sendMessage({
       op: "translate",
       value: term,
-    });
+    }).then(display).catch(e => console.log(e));
   }, delay);
 }
 
 const port = browser.runtime.connect({name: "popup"});
 port.onMessage.addListener((msg) => {
   switch (msg.op) {
-    case "displayTranslation":
-      display(msg.value);
-      break;
-
     case "translateInPopup":
       input.value = msg.value;
       main(msg.value, 0);

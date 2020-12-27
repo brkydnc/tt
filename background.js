@@ -10,12 +10,12 @@ async function fetchDocument(term) {
 
 function scrape(doc) {
   const [searchResults] = doc.getElementsByClassName("tureng-searchresults-content");
+  if (!searchResults) return {status: 1, value: []};
   const termFound = !searchResults.classList.contains("tureng-page-suggest");
 
-  let status = 0, value = [];
   if (termFound) {
     const [...tableBodies] = searchResults.getElementsByTagName("tbody");
-    value = tableBodies
+    const meanings = tableBodies
       .map(body =>
         [...body.children]
         .slice(1)
@@ -27,22 +27,19 @@ function scrape(doc) {
         )
       )
       .flat();
+    return { status: 0, value: meanings };
   }
 
   const [feedback] = searchResults.getElementsByTagName("h1");
   switch (feedback.textContent) {
+    case "Term not found":
+      return { status: 1, value: [] };
     case "Maybe the correct one is":
-      status = 2;
       const [suggestions] = searchResults.getElementsByClassName('suggestion-list');
       const [...listElements] = suggestions.getElementsByTagName('li');
       const terms = listElements.map(li => li.firstElementChild.textContent);
-      value = terms;
-      break;
-    case "Term not found":
-      status = 1; break;
+      return { status: 2, value: terms };
   }
-
-  return { status, value };
 }
 
 const popup = {
@@ -62,16 +59,15 @@ const popup = {
   }
 };
 
+browser.runtime.onMessage.addListener((msg, _, sendResponse) => {
+  if (msg.op === "translate")
+    fetchDocument(msg.value).then(doc => sendResponse(scrape(doc)));
+  return true;
+});
+
 browser.runtime.onConnect.addListener(port => {
   switch (port.name) {
     case "popup":
-      port.onMessage.addListener(msg => {
-        if (msg.op === "translate")
-          fetchDocument(msg.value).then(doc => port.postMessage({
-            op: "displayTranslation",
-            value: scrape(doc),
-          }));
-      });
       popup.setPort(port);
       break;
 
@@ -86,14 +82,6 @@ browser.runtime.onConnect.addListener(port => {
 
 browser.commands.onCommand.addListener((name) => {
   popup.openedWith = name;
-  switch (name) {
-    case "open-popup":
-      browser.browserAction.openPopup();
-      break;
-
-    case "translate-in-popup":
-      if (!popup.selectionRegister) break;
-      browser.browserAction.openPopup();
-      break;
-  }
+  if (name === "translate-in-popup" && !popup.selectionRegister) return;
+  browser.browserAction.openPopup();
 });
