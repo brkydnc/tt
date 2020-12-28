@@ -69,6 +69,7 @@ body {
 
 .suggestion:hover, .suggestion:focus {
   cursor: pointer;
+  background: var(--background-light);
 }
 .suggestion::marker {
   font-weight: bold;

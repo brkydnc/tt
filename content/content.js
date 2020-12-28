@@ -6,6 +6,15 @@ document.addEventListener('selectionchange', (e) => {
   });
 });
 
+function createElement(tag, props={}, text="") {
+  const element = document.createElement(tag);
+  Object.assign(element, props);
+  if (!text) return element;
+  const textNode = document.createTextNode(text);
+  element.appendChild(textNode);
+  return element;
+}
+
 function createStyleString(styleObj) {
   let style = "";
   for (key in styleObj) {
@@ -87,15 +96,15 @@ class Panel extends Element {
     super(tag, id);
   }
 
-  setMeanings(meanings) {
-    const string = meanings
-      .slice(0, 10)
-      .map(a => a[2])
+  setTranslation({term, translations}) {
+    const string = translations[0] // select [0] for no "other meanings"
+      .map(t => t.meaning.content)
       .join(", ");
 
-    const textNode = document.createTextNode(string);
+    const result = createElement("div", {}, string);
+
     this.element.innerHTML = "";
-    this.element.appendChild(textNode);
+    this.element.appendChild(result);
   }
 }
 
@@ -123,7 +132,7 @@ document.addEventListener('click', (e) => {
     const x = e.clientX;
     const y = e.clientY;
 
-    panel.setMeanings(value);
+    panel.setTranslation(value);
     panel.setPosition(x, y, 10, 10);
     button.setPosition(x, y, 10, 10);
     button.show();

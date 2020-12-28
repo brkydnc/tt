@@ -1,18 +1,23 @@
 const input = document.getElementById("input");
 const output = document.getElementById("output");
 
-function display({status, value}) {
+function createElement(tag, props={}, text="") {
+  const element = document.createElement(tag);
+  Object.assign(element, props);
+  if (!text) return element;
+  const textNode = document.createTextNode(text);
+  element.appendChild(textNode);
+  return element;
+}
+
+async function display({status, value}) {
   let result;
   switch(status) {
     case 0:
       result = produceTable(value);
       break;
     case 1:
-      const element = document.createElement('h4');
-      const text = document.createTextNode("Term not found.");
-      element.className = "not-found"
-      element.appendChild(text);
-      result = element;
+      result = createElement('h4', { className: "not-found" }, "Term not found.");
       break;
     case 2:
       result = produceSuggestion(value);
@@ -24,58 +29,49 @@ function display({status, value}) {
   input.focus();
 }
 
-function produceTable(rows) {
-  const tableElement = document.createElement('table');
-  tableElement.className = "table";
-  const tbody = document.createElement('tbody');
-  tbody.className = "table-body"
-
+function produceTable({term, translations}) {
+  const tableElement = createElement('table', { className: "table" });
+  const tbody = createElement('tbody', { className: "table-body" });
   tableElement.appendChild(tbody);
 
-  rows
-    .map((content) => {
-      const tr = document.createElement('tr');
-      tr.className = "table-row"
-      content.forEach(item => {
-        const td = document.createElement('td');
-        const text = document.createTextNode(item);
-        td.appendChild(text);
-        tr.appendChild(td);
-      })
-      return tr;
-    })
-    .forEach(tr => { tbody.appendChild(tr); })
+  const flattened = translations.flat();
+  flattened.forEach(({ context, phrase, meaning }) => {
+    const contextCell = createElement("td", {}, context);
+
+    const phraseText = (phrase.class)
+      ? `${phrase.content} ${phrase.class}`
+      : phrase.content;
+    const phraseCell = createElement("td", {}, phraseText);
+
+    const meaningText = (meaning.class)
+      ? `${meaning.content} ${meaning.class}`
+      : meaning.content;
+    const meaningCell = createElement("td", {}, meaningText);
+
+    const tr = createElement("tr", { className: "table-row" });
+    tr.append(contextCell, phraseCell, meaningCell);
+    tbody.appendChild(tr);
+  });
 
   return tableElement;
 }
 
 function produceSuggestion(terms) {
   const handle = term => main(term, 0);
-
-  const ol = document.createElement('ol');
-  ol.className = "suggestion-list";
+  const ol = createElement('ol', { className: "suggestion-list"});
   
   terms.forEach(term => {
-    const li = document.createElement('li');
-    const text = document.createTextNode(term);
+    const li = createElement('li', {className: "suggestion"}, term);
     li.setAttribute('tabindex', '0')
-    li.className = "suggestion";
-    li.appendChild(text);
     li.onclick = () => handle(term);
     li.onkeyup = (e) => { if (e.key === "Enter") handle(term) };
 
     ol.appendChild(li);
   });
 
-  const feedback = document.createElement('h4');
-  const text = document.createTextNode("Maybe the correct one is:");
-  feedback.className = "suggestion-header";
-  feedback.appendChild(text);
-
-  const container = document.createElement('div');
-  container.className = "suggestion-container";
-  container.appendChild(feedback);
-  container.appendChild(ol);
+  const feedback = createElement('h4', { className: "suggestion-header" }, "Maybe the correct one is:");
+  const container = createElement('div', {className: "suggestion-container" });
+  container.append(feedback, ol);
 
   return container;
 }

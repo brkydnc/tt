@@ -5,41 +5,85 @@ async function fetchDocument(term) {
   const res = await fetch(URL + term);
   const text = await res.text();
   const doc = domParser.parseFromString(text, 'text/html');
-  return doc;
+  return [term, doc];
 }
 
-function scrape(doc) {
+// Translation {
+//   context: string,
+//   phrase: Phrase {
+//     content: string,
+//     class: string | null,
+//   }
+//   meaning: Phrase {
+//     content: string,
+//     class: string | null,
+//   }
+// }
+function createTranslation(tr) {
+  const [ctxEl, phraseEl, meaningEl] = [...tr.children].slice(1,4);
+  const ctx = ctxEl.textContent;
+  const phraseContent = phraseEl.firstElementChild.textContent;
+  const phraseClass = (phraseEl.children.length > 1)
+    ? phraseEl.lastElementChild.textContent.trim()
+    : null;
+  const meaningContent = meaningEl.firstElementChild.textContent;
+  const meaningClass = (meaningEl.children.length > 1)
+    ? meaningEl.lastElementChild.textContent.trim()
+    : null;
+
+  return {
+    context: ctx,
+    phrase: {
+      content: phraseContent,
+      class: phraseClass,
+    },
+    meaning: {
+      content: meaningContent,
+      class: meaningClass,
+    }
+  }
+}
+
+function createTranslationArray(tbodyArray) {
+  return tbodyArray
+    .map(tbody =>
+      [...tbody.children] // tr array
+        .slice(1) // remove column headers
+        .filter(tr => tr.attributes.length === 0) // remove hidden rows
+        .map(createTranslation)
+    )
+}
+
+// {
+//    term: string
+//    translations: Translation[][]
+// }
+//
+// status
+//  0 FOUND 
+//  1 NOT FOUND
+//  2 SUGGESTION
+function scrape([term, doc]) {
   const [searchResults] = doc.getElementsByClassName("tureng-searchresults-content");
   if (!searchResults) return {status: 1, value: []};
   const termFound = !searchResults.classList.contains("tureng-page-suggest");
 
   if (termFound) {
     const [...tableBodies] = searchResults.getElementsByTagName("tbody");
-    const meanings = tableBodies
-      .map(body =>
-        [...body.children]
-        .slice(1)
-        .filter(tr => tr.attributes.length === 0)
-        .map(tr => 
-          [...tr.children]
-          .splice(1, 4)
-          .map(td => td.textContent.replace(/\s+/g, ' ').trim())
-        )
-      )
-      .flat();
-    return { status: 0, value: meanings };
+    const translations = createTranslationArray(tableBodies);
+    const result = { term, translations }
+    return { status: 0, value: result };
   }
 
   const [feedback] = searchResults.getElementsByTagName("h1");
-  switch (feedback.textContent) {
-    case "Term not found":
-      return { status: 1, value: [] };
-    case "Maybe the correct one is":
-      const [suggestions] = searchResults.getElementsByClassName('suggestion-list');
-      const [...listElements] = suggestions.getElementsByTagName('li');
-      const terms = listElements.map(li => li.firstElementChild.textContent);
-      return { status: 2, value: terms };
+  if (feedback.textContent === "Maybe the correct one is") {
+    const [suggestions] = searchResults.getElementsByClassName('suggestion-list');
+    const [...listElements] = suggestions.getElementsByTagName('li');
+    const terms = listElements.map(li => li.firstElementChild.textContent);
+    return { status: 2, value: terms };
   }
+
+  return { status: 1, value: [] };
 }
 
 const popup = {

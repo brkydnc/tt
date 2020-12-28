@@ -28,6 +28,6 @@
 	z-index: 99999;
   visibility: hidden;
   color: var(--white);
-  font-size: 0.6rem;
+  font-size: 13px;
   overflow: auto;
 }
