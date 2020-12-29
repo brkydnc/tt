@@ -17,7 +17,7 @@
 }
 
 body {
-  background: var(--background);
+  background: var(--background-light);
 }
 
 #input {

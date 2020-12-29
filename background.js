@@ -92,6 +92,7 @@ const popup = {
   selectionRegister: "",
   setPort: function(port) {
     this.port = port;
+    port.onDisconnect.addListener(this.onDisconnect.bind(this));
     this.onConnect();
   },
   onConnect: function translateInPopup() {
@@ -100,6 +101,9 @@ const popup = {
       op: "translateInPopup",
       value: this.selectionRegister,
     });
+  },
+  onDisconnect: function clearOpenedWith() {
+    this.openedWith = "";
   }
 };
 

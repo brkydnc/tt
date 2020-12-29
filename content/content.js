@@ -23,6 +23,28 @@ function createStyleString(styleObj) {
   return style;
 }
 
+function produceTable(translations) {
+  const tableElement = createElement('div', { className: "tureng-translate-table" });
+  const tbody = createElement('div', { className: "tureng-translate-table" });
+  tableElement.appendChild(tbody);
+
+  const firstBody = translations[0];
+  firstBody.forEach(({ context, phrase, meaning }) => {
+    const contextCell = createElement("div", { className: "tureng-translate-table-cell" }, context);
+
+    const meaningText = (meaning.class)
+      ? `${meaning.content} ${meaning.class}`
+      : meaning.content;
+    const meaningCell = createElement("div", { className: "tureng-translate-table-cell" }, meaningText);
+
+    const tr = createElement("div", { className: "tureng-translate-table-row" });
+    tr.append(contextCell, meaningCell);
+    tbody.appendChild(tr);
+  });
+
+  return tableElement;
+}
+
 function limitBox(x, y, width, height, margin, areaWidth, areaHeight) {
   const x2 = x + width;
   const y2 = y + height;
@@ -97,14 +119,11 @@ class Panel extends Element {
   }
 
   setTranslation({term, translations}) {
-    const string = translations[0] // select [0] for no "other meanings"
-      .map(t => t.meaning.content)
-      .join(", ");
-
-    const result = createElement("div", {}, string);
+    const title = createElement("div", { className: "tureng-translate-term" }, term);
+    const table = produceTable(translations);
 
     this.element.innerHTML = "";
-    this.element.appendChild(result);
+    this.element.append(title, table);
   }
 }
 
@@ -132,8 +151,10 @@ document.addEventListener('click', (e) => {
     const x = e.clientX;
     const y = e.clientY;
 
+		// if panel height is dynamic, don't swap the two lines below
     panel.setTranslation(value);
     panel.setPosition(x, y, 10, 10);
+
     button.setPosition(x, y, 10, 10);
     button.show();
   }).catch(e => console.log(e));

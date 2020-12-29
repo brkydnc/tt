@@ -10,7 +10,7 @@ function createElement(tag, props={}, text="") {
   return element;
 }
 
-async function display({status, value}) {
+function display({status, value}) {
   let result;
   switch(status) {
     case 0:
@@ -88,7 +88,7 @@ function main(term, delay) {
 }
 
 const port = browser.runtime.connect({name: "popup"});
-port.onMessage.addListener((msg) => {
+port.onMessage.addListener(msg => {
   switch (msg.op) {
     case "translateInPopup":
       input.value = msg.value;
@@ -101,6 +101,6 @@ input.addEventListener('input', e => {
   const value = e.target.value.trim();
   if (!value) return;
   main(value, 200);
-})
+});
 
 input.focus();
