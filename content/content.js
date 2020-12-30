@@ -73,7 +73,7 @@ class Element {
     this.element = document.createElement(tag);
     this.element.id = id;
     this._style = {};
-    this.margin = 10;
+    this.margin = 20;
   }
 
   setStyle(obj) {
@@ -113,6 +113,25 @@ class Element {
   }
 }
 
+class Button extends Element {
+  constructor(tag, id) {
+    super(tag, id);
+  }
+
+  show() {
+    super.show();
+    this.element.animate([
+      {transform: 'scale(0.9)'},
+      {transform: 'scale(1.05)'},
+      {transform: 'scale(1.0)'},
+    ], {
+      id: "pop",
+      duration: 100,
+      easing: "ease-out",
+    });
+  }
+}
+
 class Panel extends Element {
   constructor(tag, id) {
     super(tag, id);
@@ -125,22 +144,46 @@ class Panel extends Element {
     this.element.innerHTML = "";
     this.element.append(title, table);
   }
+
+  show() {
+    super.show();
+    this.element.animate({
+      opacity: [0, 1],
+    },
+    {
+      id: "fade-in",
+      duration: 100,
+      easing: "ease-out",
+    });
+  }
 }
 
-const button = new Element("div", "tureng-translate-button");
+const button = new Button("div", "tureng-translate-button");
 const panel = new Panel("div", "tureng-translate-panel");
 
-document.addEventListener('click', (e) => {
-	if (e.target === button.element) {
-    button.hide();
-    panel.show();
-    return;
+button.element.addEventListener('mousedown', () => {
+  button.hide();
+  panel.show();
+})
+
+document.addEventListener('keyup', (e) => {
+  if (e.key === "Escape") {;
+    button.hide()
+    panel.hide();
   }
+});
 
-	if (e.target !== button.element && e.target !== panel.element) panel.hide();
+document.addEventListener('click', (e) => {
+	if (e.target !== button.element && !panel.element.contains(e.target)) {
+    panel.hide();
+    button.hide();
+  }
+});
 
+document.addEventListener('click', (e) => {
   const selection = document.getSelection().toString().trim();
-	if (selection.length === 0) return button.hide();
+	if (!selection) return;
+	if (panel.element.contains(e.target)) return;
 
   browser.runtime.sendMessage({
     op: "translate",
@@ -160,5 +203,4 @@ document.addEventListener('click', (e) => {
   }).catch(e => console.log(e));
 });
 
-document.body.appendChild(button.element);
-document.body.appendChild(panel.element);
+document.body.append(button.element, panel.element);

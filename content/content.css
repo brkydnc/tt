@@ -19,7 +19,7 @@
   border-radius: 3px;
   border: 1px solid var(--tureng-translate-button-border);
   position: fixed;
-	z-index: 99999;
+	z-index: 2147483647;
   cursor: pointer;
 	overflow: hidden;
   visibility: hidden;
@@ -32,7 +32,7 @@
   width: 250px;
 	max-height: 150px;
   position: fixed;
-	z-index: 99999;
+	z-index: 2147483647;
   visibility: hidden;
   color: var(--tureng-translate-white);
   font-size: 13px;
@@ -40,6 +40,13 @@
   font-family: "Noto Sans";
   background: var(--tureng-translate-background);
   border: 2px solid var(--tureng-translate-row-border);
+  box-shadow: 0 1px 1px rgba(0,0,0,0.18),
+              0 2px 2px rgba(0,0,0,0.18),
+              0 4px 4px rgba(0,0,0,0.18),
+              0 6px 8px rgba(0,0,0,0.18),
+              0 8px 16px rgba(0,0,0,0.18);
+  scrollbar-color: #6b6b6b #272727;
+  scrollbar-width: auto;
 }
 
 .tureng-translate-term {

@@ -16,6 +16,11 @@
   border: none;
 }
 
+html {
+  scrollbar-color: #6b6b6b #272727;
+  scrollbar-width: auto;
+}
+
 body {
   background: var(--background-light);
 }
