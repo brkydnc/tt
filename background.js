@@ -129,7 +129,13 @@ browser.runtime.onConnect.addListener(port => {
 });
 
 browser.commands.onCommand.addListener((name) => {
+  const tip = name === "translate-in-popup" && popup.selectionRegister;
+  const op = name === "open-popup";
+  if (!(tip || op)) return;
   popup.openedWith = name;
-  if (name === "translate-in-popup" && !popup.selectionRegister) return;
   browser.browserAction.openPopup();
+});
+
+browser.browserAction.onClicked.addListener(() => {
+  popup.openedWith = "click";
 });
