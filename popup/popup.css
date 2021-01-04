@@ -6,6 +6,8 @@
   --background: #303030;
   --background-light: #454545;
   --row-border: #272727;
+  --scrollbar-track: #272727;
+  --scrollbar-thumb: #6b6b6b;
 }
 
 * {
@@ -20,6 +22,10 @@ html {
   scrollbar-color: #6b6b6b #272727;
   scrollbar-width: auto;
 }
+
+html::-webkit-scrollbar {width: 13px;}
+html::-webkit-scrollbar-thumb {background: var(--scrollbar-thumb);}
+html::-webkit-scrollbar-track {background: var(--scrollbar-track);}
 
 body {
   background: var(--background-light);
@@ -44,10 +50,11 @@ body {
 }
 
 .table {
+  width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
   font-size: .8rem;
-  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .table-row {
@@ -55,13 +62,14 @@ body {
   border: 1px solid var(--row-border);
 }
 
-.table-row > * {
-  max-width: 180px;
-  padding: .1rem .5rem;
-}
-
 .table-row:nth-child(odd) {
   background: var(--background);
+}
+
+.table-cell {
+  max-width: 180px;
+  padding: .1rem .5rem;
+  vertical-align: middle;
 }
 
 .suggestion-container {

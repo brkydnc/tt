@@ -1,0 +1,11 @@
+{
+  "name": "tt",
+  "version": "2",
+  "main": "index.js",
+  "repository": "https://github.com/brkydnc/tt.git",
+  "author": "Berkay Dinç <berkayydinc@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "webextension-polyfill": "^0.7.0"
+  }
+}

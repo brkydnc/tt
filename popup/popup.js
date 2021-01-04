@@ -31,22 +31,22 @@ function display({status, value}) {
 
 function produceTable({term, translations}) {
   const tableElement = createElement('table', { className: "table" });
-  const tbody = createElement('tbody', { className: "table-body" });
+  const tbody = createElement('table', { className: "table" });
   tableElement.appendChild(tbody);
 
   const flattened = translations.flat();
   flattened.forEach(({ context, phrase, meaning }) => {
-    const contextCell = createElement("td", {}, context);
+    const contextCell = createElement("td", {className: "table-cell"}, context);
 
     const phraseText = (phrase.class)
       ? `${phrase.content} ${phrase.class}`
       : phrase.content;
-    const phraseCell = createElement("td", {}, phraseText);
+    const phraseCell = createElement("td", {className: "table-cell"}, phraseText);
 
     const meaningText = (meaning.class)
       ? `${meaning.content} ${meaning.class}`
       : meaning.content;
-    const meaningCell = createElement("td", {}, meaningText);
+    const meaningCell = createElement("td", {className: "table-cell"}, meaningText);
 
     const tr = createElement("tr", { className: "table-row" });
     tr.append(contextCell, phraseCell, meaningCell);

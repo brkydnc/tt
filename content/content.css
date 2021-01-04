@@ -7,6 +7,8 @@
   --tureng-translate-background-light: #454545;
   --tureng-translate-button-border: #80131e;
   --tureng-translate-row-border: #272727;
+  --tureng-translate-scrollbar-track: #272727;
+  --tureng-translate-scrollbar-thumb: #6b6b6b;
 }
 
 #tureng-translate-button {
@@ -15,7 +17,6 @@
   padding: 0;
   width: 20px;
   height: 20px;
-  background: url('../icons/tt-32.png') center / 100% 100% no-repeat;
   border-radius: 3px;
   border: 1px solid var(--tureng-translate-button-border);
   position: fixed;
@@ -51,6 +52,14 @@
               0 8px 16px rgba(0,0,0,0.18);
   scrollbar-color: #6b6b6b #272727;
   scrollbar-width: auto;
+}
+
+#tureng-translate-panel::-webkit-scrollbar {width: 10px;}
+#tureng-translate-panel::-webkit-scrollbar-thumb {
+  background: var(--tureng-translate-scrollbar-thumb);
+}
+#tureng-translate-panel::-webkit-scrollbar-track {
+  background: var(--tureng-translate-scrollbar-track);
 }
 
 .tureng-translate-term {

@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Tureng Translate",
   "short_name": "tt",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Translate words and phrases by means of scraping Tureng",
   "icons": {
     "48": "icons/tt-48.png",
@@ -15,12 +15,18 @@
     "default_popup": "popup/popup.html"
   },
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "browser-polyfill.min.js",
+      "background.js"
+    ]
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content/content.js"],
+      "js": [
+        "browser-polyfill.min.js",
+        "content/content.js"
+      ],
       "css": ["content/content.css"]
     }
   ],
@@ -28,11 +34,10 @@
     "icons/tt-32.png"
   ],
   "commands": {
-    "open-popup": {
+    "_execute_browser_action": {
       "suggested_key": {
         "default": "Ctrl+Shift+Space"
-      },
-      "description": "Open popup"
+      }
     },
     "translate-in-popup": {
       "suggested_key": {

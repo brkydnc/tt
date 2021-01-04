@@ -116,6 +116,11 @@ class Element {
 class Button extends Element {
   constructor(tag, id) {
     super(tag, id);
+
+    const backgroundURL = browser.extension.getURL("icons/tt-32.png");
+    this.setStyle({
+      background: `url(${backgroundURL}) center / 100% 100% no-repeat`,
+    });
   }
 
   show() {
@@ -173,7 +178,7 @@ document.addEventListener('keyup', (e) => {
   }
 });
 
-document.addEventListener('click', (e) => {
+document.addEventListener('mouseup', (e) => {
 	if (e.target !== button.element && !panel.element.contains(e.target)) {
     panel.hide();
     button.hide();
