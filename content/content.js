@@ -185,7 +185,7 @@ document.addEventListener('mouseup', (e) => {
   }
 });
 
-document.addEventListener('click', (e) => {
+document.addEventListener('mouseup', (e) => {
   const selection = document.getSelection().toString().trim();
 	if (!selection) return;
 	if (panel.element.contains(e.target)) return;
