@@ -152,6 +152,8 @@ class Panel extends Element {
 
   show() {
     super.show();
+    this.element.scrollTop = 0;
+    this.element.scrollLeft = 0;
     this.element.animate({
       opacity: [0, 1],
     },
