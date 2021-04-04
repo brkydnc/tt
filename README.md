@@ -12,7 +12,7 @@ Features are handled using [webextension-polyfill](https://github.com/mozilla/we
 
 # Packaging & Usage
 ### Firefox
-Run `package.sh` and load `tt.xpi`. Don't forget to set `xpinstall.signatures.required` to `false` in `about:config`
+First, set `xpinstall.signatures.required` to `false` in `about:config` then run `package.sh` and load `tt.xpi`.
 ### Chrome & Opera
 You have to turn on `Developer Mode` and then load the extension unpacked.
 
