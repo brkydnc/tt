@@ -181,7 +181,7 @@ document.addEventListener('keyup', (e) => {
 });
 
 document.addEventListener('mouseup', (e) => {
-	if (e.target !== button.element && !panel.element.contains(e.target)) {
+  if (e.target !== button.element && !panel.element.contains(e.target)) {
     panel.hide();
     button.hide();
   }
@@ -189,8 +189,8 @@ document.addEventListener('mouseup', (e) => {
 
 document.addEventListener('mouseup', (e) => {
   const selection = document.getSelection().toString().trim();
-	if (!selection) return;
-	if (panel.element.contains(e.target)) return;
+  if (!selection) return;
+  if (panel.element.contains(e.target)) return;
 
   browser.runtime.sendMessage({
     op: "translate",
@@ -201,7 +201,7 @@ document.addEventListener('mouseup', (e) => {
     const x = e.clientX;
     const y = e.clientY;
 
-		// if panel height is dynamic, don't swap the two lines below
+    // if panel height is dynamic, don't swap the two lines below
     panel.setTranslation(value);
     panel.setPosition(x, y, 10, 10);
 

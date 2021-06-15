@@ -12,7 +12,7 @@ Features are handled using [webextension-polyfill](https://github.com/mozilla/we
 
 # Packaging & Usage
 ### Firefox
-First, set `xpinstall.signatures.required` to `false` in `about:config` then run `package.sh` and load `tt.xpi`.
+You can download it from [firefox addons](https://addons.mozilla.org/firefox/addon/tureng-translate/).
 ### Chrome & Opera
 You have to turn on `Developer Mode` and then load the extension unpacked.
 
