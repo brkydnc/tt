@@ -1,35 +1,30 @@
+const createElement = utils.createElement
+
 const input = document.getElementById("input");
 const output = document.getElementById("output");
+const pronunciationContainer = document.getElementById("pronunciation-container");
 
-function createElement(tag, props={}, text="") {
-  const element = document.createElement(tag);
-  Object.assign(element, props);
-  if (!text) return element;
-  const textNode = document.createTextNode(text);
-  element.appendChild(textNode);
-  return element;
+function createPronunciations(pronunciations) {
+  return pronunciations
+    .map(p => {
+      const style = utils.createStyleString({ "background-image": `url(${p.flag})` });
+      const audio = createElement("audio", { src: p.audio });
+      const audioContainer = createElement("div", {
+        className: "pronunciation",
+        style
+      });
+
+      audioContainer.onclick = () => {
+        audio.load();
+        audio.play();
+      };
+      audioContainer.appendChild(audio);
+
+      return audioContainer;
+    });
 }
 
-function display({status, value}) {
-  let result;
-  switch(status) {
-    case 0:
-      result = produceTable(value);
-      break;
-    case 1:
-      result = createElement('h4', { className: "not-found" }, "Term not found.");
-      break;
-    case 2:
-      result = produceSuggestion(value);
-      break;
-  }
-
-  output.innerHTML = '';
-  output.appendChild(result);
-  input.focus();
-}
-
-function produceTable({term, translations}) {
+function createTranslationTable({ term, translations, pronunciations }) {
   const tableElement = createElement('table', { className: "table" });
   const tbody = createElement('table', { className: "table" });
   tableElement.appendChild(tbody);
@@ -56,7 +51,7 @@ function produceTable({term, translations}) {
   return tableElement;
 }
 
-function produceSuggestion(terms) {
+function createSuggestions(terms) {
   const handle = term => main(term, 0);
   const ol = createElement('ol', { className: "suggestion-list"});
   
@@ -76,23 +71,51 @@ function produceSuggestion(terms) {
   return container;
 }
 
+function display({status, value}) {
+  output.innerHTML = '';
+  pronunciationContainer.innerHTML = '';
+
+  let result;
+  switch(status) {
+    case 0:
+      result = createTranslationTable(value);
+      const flags = createPronunciations(value.pronunciations);
+      pronunciationContainer.append(...flags);
+      break;
+    case 1:
+      result = createElement('h4', { className: "not-found" }, "Term not found.");
+      break;
+    case 2:
+      result = createSuggestions(value);
+      break;
+  }
+
+  output.appendChild(result);
+
+  input.focus();
+}
+
+const port = browser.runtime.connect({name: "popup"});
+
 let timeout;
 function main(term, delay) {
   clearTimeout(timeout);
   timeout = setTimeout(() => {
-    browser.runtime.sendMessage({
+    port.postMessage({
       op: "translate",
       value: term,
-    }).then(display).catch(e => console.log(e));
+    });
   }, delay);
 }
 
-const port = browser.runtime.connect({name: "popup"});
-port.onMessage.addListener(msg => {
-  switch (msg.op) {
+port.onMessage.addListener(({ op, value }) => {
+  switch (op) {
+    case "translateResult":
+      display(value)
+      break;
     case "translateInPopup":
-      input.value = msg.value;
-      main(msg.value, 0);
+      input.value = value;
+      main(value, 0);
       break;
   }
 });

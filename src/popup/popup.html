@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="popup.css"/>
+    <script src="../browser-polyfill.min.js"></script>
+    <script defer src="../utils.js"></script>
+    <script defer src="popup.js"></script>
+  </head>
+
+  <body>
+    <div id="input-container">
+      <input id="input" placeholder="Translate..." ></input>
+      <div id="pronunciation-container">
+      </div>
+      <select id="dictionary">
+        <option value="turkish-english">EN-TR</option>
+        <option value="german-english">EN-DE</option>
+        <option value="spanish-english">EN-ES</option>
+        <option value="french-english">EN-FR</option>
+      </select>
+    </div>
+    <div id="output"></div>
+  </body>
+</html>

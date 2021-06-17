@@ -62,18 +62,58 @@
   background: var(--tureng-translate-scrollbar-track);
 }
 
-.tureng-translate-term {
+.tureng-translate-container {
+  all: initial;
+  visibility: inherit;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 3px 5px;
+  border-bottom: 3px solid var(--tureng-translate-red);
+  background: var(--tureng-translate-background-light);
+}
+
+.tureng-translate-title {
   all: initial;
   visibility: inherit;
   display: block;
   margin: 0;
-  padding: 3px 5px;
-  border-bottom: 3px solid var(--tureng-translate-red);
+  padding: 0;
   font-family: "Noto Sans";
   font-size: 12px;
   font-weight: bold;
   color: var(--tureng-translate-white);
-  background: var(--tureng-translate-background-light);
+}
+
+.tureng-translate-pronunciation-container {
+  all: initial;
+  visibility: inherit;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.tureng-translate-pronunciation {
+  all: initial;
+  visibility: inherit;
+  width: 20px;
+  height: 15px;
+  margin: 0;
+  padding: 0;
+  border-radius: 2px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.tureng-translate-pronunciation + .tureng-translate-pronunciation {
+  margin-left: 5px;
+}
+
+.tureng-translate-pronunciation:hover {
+  cursor: pointer;
 }
 
 .tureng-translate-table {

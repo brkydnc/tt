@@ -12,22 +12,24 @@
   "browser_action": {
     "default_icon": "icons/tt-32.png",
     "default_title": "Tureng Translate",
-    "default_popup": "popup/popup.html"
+    "default_popup": "src/popup/popup.html"
   },
   "background": {
     "scripts": [
-      "browser-polyfill.min.js",
-      "background.js"
+      "src/browser-polyfill.min.js",
+      "src/utils.js",
+      "src/background.js"
     ]
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": [
-        "browser-polyfill.min.js",
-        "content/content.js"
+        "src/browser-polyfill.min.js",
+        "src/utils.js",
+        "src/content/content.js"
       ],
-      "css": ["content/content.css"]
+      "css": ["src/content/content.css"]
     }
   ],
   "web_accessible_resources": [

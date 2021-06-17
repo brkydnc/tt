@@ -1,11 +1,11 @@
 const domParser = new DOMParser();
-const URL = 'https://tureng.com/en/turkish-english/';
+const URL = "https://tureng.com/en/turkish-english/";
 
 async function fetchDocument(term) {
   const res = await fetch(URL + term);
   const text = await res.text();
   const doc = domParser.parseFromString(text, 'text/html');
-  return [term, doc];
+  return doc;
 }
 
 // Translation {
@@ -54,9 +54,44 @@ function createTranslationArray(tbodyArray) {
     )
 }
 
+// Pronunciation {
+//   audio: URL,
+//   flag: URL,
+// }
+function createPronunciationArray(audioContainers) {
+  return audioContainers
+    .map(container => {
+      const [audioElement, flagElement] = container.children;
+      const flag = getFlagURLByFlagElement(flagElement);
+      const audio = getAudioURLFromAudioElement(audioElement);
+      return { audio, flag }
+    });
+}
+
+// A flag element has attribute "data-accent".
+// A data accent has the format FROM_TO_FROM_accent (without underscores).
+// Examples: ENTRENus, ENTRENuk, ENFRFRfr, ENFRFRca.
+function getFlagURLByFlagElement(flagElement) {
+  const dataAccent = flagElement.getAttribute("data-accent");
+  const accent = dataAccent.substr(6, 2);
+  return `https://asset.tureng.co/images/flag-${accent}.png`
+}
+
+// An audio element has a <source> in it, which is firstElementChild.
+//
+// If an element has src attribute without a protocol at the beginning,
+// accesses to this attribute gives us an URL that beings with "moz-extension".
+// to prevent this we use getAttribute("src") to get URL without a protocol and
+// then append "https:" manually.
+function getAudioURLFromAudioElement(audioElement) {
+  const URL = audioElement.firstElementChild.getAttribute("src");
+  return "https:" + URL;
+}
+
 // {
 //    term: string
 //    translations: Translation[][]
+//    pronunciations: Pronunciation[]
 // }
 //
 // status
@@ -70,8 +105,12 @@ function scrape([term, doc]) {
 
   if (termFound) {
     const [...tableBodies] = searchResults.getElementsByTagName("tbody");
+    const [...audioContainers] = searchResults.getElementsByClassName("tureng-voice");
+
     const translations = createTranslationArray(tableBodies);
-    const result = { term, translations }
+    const pronunciations = createPronunciationArray(audioContainers)
+
+    const result = { term, translations, pronunciations }
     return { status: 0, value: result };
   }
 
@@ -107,13 +146,26 @@ const popup = {
   }
 };
 
-browser.runtime.onMessage.addListener((msg, _, sendResponse) => {
-  if (msg.op === "translate")
-    fetchDocument(msg.value).then(doc => sendResponse(scrape(doc)));
-  return true;
-});
-
 browser.runtime.onConnect.addListener(port => {
+  // TODO:
+  //   Handle erors that occur when a promise tries to post message to a closed
+  //   port.
+  //
+  port.onMessage.addListener(msg => {
+    if (msg.op === "translate") {
+      const term = msg.value;
+      fetchDocument(term)
+        .then(doc => {
+          const value = scrape([term, doc]);
+
+          port.postMessage({
+            op: "translateResult",
+            value
+          })
+        });
+    }
+  })
+
   switch (port.name) {
     case "popup":
       popup.setPort(port);

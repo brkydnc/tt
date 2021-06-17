@@ -31,15 +31,52 @@ body {
   background: var(--background-light);
 }
 
-#input {
-  display: block;
+#input-container {
+  display: flex;
+  overflow: visible;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: flex-end;
   box-sizing: border-box;
-  width: 100%;
-  min-width: 180px;
   padding: .3rem;
+  min-width: 180px;
   position: sticky;
-  top:0;
+  top: 0;
   border-bottom: 2px solid var(--red);
+  font-size: .8rem;
+  color: var(--white);
+  background: var(--background-light);
+}
+
+#input {
+  justify-self: flex-start;
+  flex: 1;
+  box-sizing: border-box;
+  color: inherit;
+  background: inherit;
+}
+
+#pronunciation-container {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.pronunciation {
+  width: 20px;
+  height: 15px;
+  margin: 0 5px;
+  border-radius: 2px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.pronunciation:hover {
+  cursor: pointer;
+}
+
+#dictionary {
   font-size: .8rem;
   color: var(--white);
   background: var(--background-light);
