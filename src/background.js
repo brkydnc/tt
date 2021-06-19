@@ -1,8 +1,7 @@
 const domParser = new DOMParser();
-const URL = "https://tureng.com/en/turkish-english/";
 
-async function fetchDocument(term) {
-  const res = await fetch(URL + term);
+async function fetchDocument(term, dictionary) {
+  const res = await fetch(`https://tureng.com/en/${dictionary}/${term}`);
   const text = await res.text();
   const doc = domParser.parseFromString(text, 'text/html');
   return doc;
@@ -129,6 +128,7 @@ const popup = {
   port: null,
   openedWith: "",
   selectionRegister: "",
+  dictionary: "",
   setPort: function(port) {
     this.port = port;
     port.onDisconnect.addListener(this.onDisconnect.bind(this));
@@ -146,6 +146,10 @@ const popup = {
   }
 };
 
+browser.storage.local.get("dictionary")
+  .then(obj => { popup.dictionary = obj.dictionary })
+  .catch(e => console.log(e));
+
 browser.runtime.onConnect.addListener(port => {
   // TODO:
   //   Handle erors that occur when a promise tries to post message to a closed
@@ -153,16 +157,26 @@ browser.runtime.onConnect.addListener(port => {
   //
   port.onMessage.addListener(msg => {
     if (msg.op === "translate") {
-      const term = msg.value;
-      fetchDocument(term)
+      const term = msg.value.term;
+      const dictionary = msg.value.dictionary || popup.dictionary || "turkish-english";
+
+      fetchDocument(term, dictionary)
         .then(doc => {
           const value = scrape([term, doc]);
+
+          if (popup.dictionary != dictionary) {
+            popup.dictionary = dictionary;
+            browser.storage.local.set({ dictionary });
+          }
 
           port.postMessage({
             op: "translateResult",
             value
-          })
+          });
         });
+    } else if (msg.op === "updatePopupDictionary") {
+      popup.dictionary = msg.value;
+      browser.storage.local.set({ dictionary: msg.value });
     }
   })
 

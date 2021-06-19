@@ -3,6 +3,7 @@ const createElement = utils.createElement
 const input = document.getElementById("input");
 const output = document.getElementById("output");
 const pronunciationContainer = document.getElementById("pronunciation-container");
+const dictionarySelect = document.getElementById("dictionary");
 
 function createPronunciations(pronunciations) {
   return pronunciations
@@ -54,7 +55,7 @@ function createTranslationTable({ term, translations, pronunciations }) {
 function createSuggestions(terms) {
   const handle = term => main(term, 0);
   const ol = createElement('ol', { className: "suggestion-list"});
-  
+
   terms.forEach(term => {
     const li = createElement('li', {className: "suggestion"}, term);
     li.setAttribute('tabindex', '0')
@@ -103,7 +104,7 @@ function main(term, delay) {
   timeout = setTimeout(() => {
     port.postMessage({
       op: "translate",
-      value: term,
+      value: { term, dictionary: dictionarySelect.value },
     });
   }, delay);
 }
@@ -126,4 +127,22 @@ input.addEventListener('input', e => {
   main(value, 200);
 });
 
+dictionarySelect.addEventListener('change', e => {
+  window.localStorage.setItem("dictionary", e.target.value);
+
+  port.postMessage({
+    op: "updatePopupDictionary",
+    value: e.target.value,
+  });
+
+  const term = input.value.trim();
+  if (term) {
+    port.postMessage({
+      op: "translate",
+      value: { term, dictionary: e.target.value },
+    });
+  }
+});
+
 input.focus();
+dictionarySelect.value = window.localStorage.getItem("dictionary") || "turkish-english";

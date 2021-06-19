@@ -83,6 +83,7 @@
   font-size: 12px;
   font-weight: bold;
   color: var(--tureng-translate-white);
+  word-break: break-all;
 }
 
 .tureng-translate-pronunciation-container {
@@ -152,4 +153,5 @@
   font-size: 12px;
   color: var(--tureng-translate-white);
   font-family: "Noto Sans";
+  word-break: break-all;
 }

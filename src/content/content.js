@@ -202,7 +202,7 @@ document.addEventListener('mouseup', (e) => {
 
   port.postMessage({
     op: "translate",
-    value: selection,
+    value: { term: selection, dictionary: undefined },
   });
 });
 
