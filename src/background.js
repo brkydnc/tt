@@ -204,3 +204,18 @@ browser.commands.onCommand.addListener(name => {
 browser.browserAction.onClicked.addListener(() => {
   popup.openedWith = "click";
 });
+
+browser.menus.create({
+  title: "Open Tureng page in new tab",
+  id: "go-to-tureng-page",
+  type: "normal",
+  contexts: ["selection"],
+  icons: {
+    "32": "../icons/tt-32.png",
+  },
+});
+
+browser.menus.onClicked.addListener((info, tab) => {
+  const url = `https://tureng.com/en/${popup.dictionary}/${info.selectionText}`;
+  browser.tabs.create({ url });
+})
