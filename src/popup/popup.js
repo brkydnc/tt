@@ -25,6 +25,15 @@ function createPronunciations(pronunciations) {
     });
 }
 
+function createCellFromPhrase(phrase) {
+  const phraseCell = createElement("td", { className: "table-cell" }, phrase.content);
+  if (phrase.class) {
+    const classElement = createElement("i", {}, ` ${phrase.class}`);
+    phraseCell.appendChild(classElement);
+  }
+  return phraseCell;
+}
+
 function createTranslationTable({ term, translations, pronunciations }) {
   const tableElement = createElement('table', { className: "table" });
   const tbody = createElement('table', { className: "table" });
@@ -33,18 +42,10 @@ function createTranslationTable({ term, translations, pronunciations }) {
   const flattened = translations.flat();
   flattened.forEach(({ context, phrase, meaning }) => {
     const contextCell = createElement("td", {className: "table-cell"}, context);
-
-    const phraseText = (phrase.class)
-      ? `${phrase.content} ${phrase.class}`
-      : phrase.content;
-    const phraseCell = createElement("td", {className: "table-cell"}, phraseText);
-
-    const meaningText = (meaning.class)
-      ? `${meaning.content} ${meaning.class}`
-      : meaning.content;
-    const meaningCell = createElement("td", {className: "table-cell"}, meaningText);
-
+    const phraseCell = createCellFromPhrase(phrase);
+    const meaningCell = createCellFromPhrase(meaning);
     const tr = createElement("tr", { className: "table-row" });
+
     tr.append(contextCell, phraseCell, meaningCell);
     tbody.appendChild(tr);
   });

@@ -109,6 +109,19 @@ class Panel extends Element {
   }
 }
 
+function createCellFromPhrase(phrase) {
+  const phraseCell = createElement("td", {
+    className: "tureng-translate-table-cell"
+  }, phrase.content);
+
+  if (phrase.class) {
+    const classElement = createElement("i", {}, ` ${phrase.class}`);
+    phraseCell.appendChild(classElement);
+  }
+
+  return phraseCell;
+}
+
 function createTranslationTable(translations) {
   const tableElement = createElement('div', { className: "tureng-translate-table" });
   const tbody = createElement('div', { className: "tureng-translate-table" });
@@ -117,13 +130,9 @@ function createTranslationTable(translations) {
   const firstBody = translations[0];
   firstBody.forEach(({ context, phrase, meaning }) => {
     const contextCell = createElement("div", { className: "tureng-translate-table-cell" }, context);
-
-    const meaningText = (meaning.class)
-      ? `${meaning.content} ${meaning.class}`
-      : meaning.content;
-    const meaningCell = createElement("div", { className: "tureng-translate-table-cell" }, meaningText);
-
+    const meaningCell = createCellFromPhrase(meaning);
     const tr = createElement("div", { className: "tureng-translate-table-row" });
+
     tr.append(contextCell, meaningCell);
     tbody.appendChild(tr);
   });
