@@ -185,34 +185,80 @@ button.element.addEventListener('mousedown', () => {
   panel.show();
 })
 
-document.addEventListener('keyup', (e) => {
-  if (e.key === "Escape") {;
-    button.hide()
-    panel.hide();
+const componentDependentDocumentListeners = [
+  [
+    'keyup',
+    (e) => {
+      if (e.key === "Escape") {
+        button.hide();
+        panel.hide();
+      }
+    }
+  ],
+  [
+    'mouseup',
+    (e) => {
+      if (e.target !== button.element && !panel.element.contains(e.target)) {
+        panel.hide();
+        button.hide();
+      }
+    }
+  ],
+  [
+    'mouseup',
+    (e) => {
+      const selection = document.getSelection().toString().trim();
+      if (!selection) return;
+      if (panel.element.contains(e.target)) return;
+
+      const x = e.clientX;
+      const y = e.clientY;
+      panel.setPosition(x, y, 10, 10);
+      button.setPosition(x, y, 10, 10);
+
+      port.postMessage({
+        op: "translate",
+        value: { term: selection, dictionary: undefined },
+      });
+    }
+  ],
+];
+
+let elementsAppended = false;
+
+function addCDDListeners() {
+  for (const args of componentDependentDocumentListeners) {
+    document.addEventListener(...args);
+  }
+}
+
+function removeCDDListeners() {
+  for (const args of componentDependentDocumentListeners) {
+    document.removeEventListener(...args);
+  }
+}
+
+browser.storage.local.get({ disablePanel: false })
+  .then(obj => {
+    if (!obj.disablePanel && !elementsAppended) {
+      addCDDListeners();
+      document.body.append(button.element, panel.element);
+      elementsAppended = true;
+    }
+  })
+  .catch(e => console.log(e));
+
+browser.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName != "local" || !changes.hasOwnProperty("disablePanel")) return;
+
+  if (changes.disablePanel.newValue && elementsAppended) {
+    button.element.remove();
+    panel.element.remove();
+    removeCDDListeners();
+    elementsAppended = false;
+  } else if (!changes.disablePanel.newValue && !elementsAppended){
+    addCDDListeners();
+    document.body.append(button.element, panel.element);
+    elementsAppended = true;
   }
 });
-
-document.addEventListener('mouseup', (e) => {
-  if (e.target !== button.element && !panel.element.contains(e.target)) {
-    panel.hide();
-    button.hide();
-  }
-});
-
-document.addEventListener('mouseup', (e) => {
-  const selection = document.getSelection().toString().trim();
-  if (!selection) return;
-  if (panel.element.contains(e.target)) return;
-
-  const x = e.clientX;
-  const y = e.clientY;
-  panel.setPosition(x, y, 10, 10);
-  button.setPosition(x, y, 10, 10);
-
-  port.postMessage({
-    op: "translate",
-    value: { term: selection, dictionary: undefined },
-  });
-});
-
-document.body.append(button.element, panel.element);

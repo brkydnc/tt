@@ -124,18 +124,21 @@ function scrape([term, doc]) {
   return { status: 1, value: [] };
 }
 
+// Popup
+
 const popup = {
   port: null,
   openedWith: "",
   selectionRegister: "",
   dictionary: "",
+
   setPort: function(port) {
     this.port = port;
     port.onDisconnect.addListener(this.onDisconnect.bind(this));
     this.onConnect();
   },
   onConnect: function translateInPopup() {
-    if (this.openedWith !== "translate-in-popup") return;
+    if (this.openedWith !== "translate_in_popup") return;
     this.port.postMessage({
       op: "translateInPopup",
       value: this.selectionRegister,
@@ -146,19 +149,78 @@ const popup = {
   }
 };
 
-browser.storage.local.get("dictionary")
+browser.storage.local.get({ dictionary: "turkish-english" })
   .then(obj => { popup.dictionary = obj.dictionary })
   .catch(e => console.log(e));
 
+browser.commands.onCommand.addListener(name => {
+  const tip = name === "translate_in_popup" && popup.selectionRegister;
+  if (!tip) return;
+  popup.openedWith = name;
+  browser.browserAction.openPopup();
+});
+
+browser.browserAction.onClicked.addListener(() => {
+  popup.openedWith = "click";
+});
+
+// Context menu
+
+let contextMenuExists = false;
+
+function createContextMenuIfNotExists() {
+  if (contextMenuExists) return;
+
+  browser.menus.create({
+    title: "Open Tureng page in new tab",
+    id: "open-tureng-page",
+    type: "normal",
+    contexts: ["selection"],
+    icons: {
+      "32": "../icons/tt-32.png",
+    },
+  });
+
+  browser.menus.onClicked.addListener((info, tab) => {
+    const url = `https://tureng.com/en/${popup.dictionary}/${info.selectionText}`;
+    browser.tabs.create({ url });
+  });
+
+  contextMenuExists = true;
+}
+
+function removeContextMenuIfNotExists() {
+  if (!contextMenuExists) return;
+
+  browser.menus.remove("open-tureng-page");
+
+  contextMenuExists = false;
+}
+
+browser.storage.local.get({ disableContextMenu: false })
+  .then(obj => { if (!obj.disableContextMenu) createContextMenuIfNotExists(); })
+  .catch(e => console.log(e));
+
+browser.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName != "local" || !changes.hasOwnProperty("disableContextMenu")) return;
+
+  if (changes.disableContextMenu.newValue)
+    removeContextMenuIfNotExists();
+  else
+    createContextMenuIfNotExists();
+});
+
+// Port handling
+
 browser.runtime.onConnect.addListener(port => {
   // TODO:
-  //   Handle erors that occur when a promise tries to post message to a closed
+  //   Handle errors that occur when a promise tries to post message to a closed
   //   port.
   //
   port.onMessage.addListener(msg => {
     if (msg.op === "translate") {
       const term = msg.value.term;
-      const dictionary = msg.value.dictionary || popup.dictionary || "turkish-english";
+      const dictionary = msg.value.dictionary || popup.dictionary;
 
       fetchDocument(term, dictionary)
         .then(doc => {
@@ -193,29 +255,3 @@ browser.runtime.onConnect.addListener(port => {
       break;
   }
 });
-
-browser.commands.onCommand.addListener(name => {
-  const tip = name === "translate-in-popup" && popup.selectionRegister;
-  if (!tip) return; 
-  popup.openedWith = name;
-  browser.browserAction.openPopup();
-});
-
-browser.browserAction.onClicked.addListener(() => {
-  popup.openedWith = "click";
-});
-
-browser.menus.create({
-  title: "Open Tureng page in new tab",
-  id: "go-to-tureng-page",
-  type: "normal",
-  contexts: ["selection"],
-  icons: {
-    "32": "../icons/tt-32.png",
-  },
-});
-
-browser.menus.onClicked.addListener((info, tab) => {
-  const url = `https://tureng.com/en/${popup.dictionary}/${info.selectionText}`;
-  browser.tabs.create({ url });
-})

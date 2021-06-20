@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+
+:root {
+  --white: #f5f5f5;
+  --red: #c22131;
+  --background: #303030;
+  --background-light: #454545;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Noto Sans";
+  outline: none;
+  border: none;
+}
+
+html {
+  overflow: hidden;
+}
+
+body {
+  /* background: var(--background-light); */
+}
+
+form {
+  padding: 1rem;
+}
+
+label {
+  /* color: var(--white); */
+}

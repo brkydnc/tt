@@ -9,6 +9,9 @@
     "96": "icons/tt-96.png"
   },
   "permissions": ["<all_urls>", "activeTab", "storage", "menus"],
+  "options_ui": {
+    "page": "src/options/options.html"
+  },
   "browser_action": {
     "default_icon": "icons/tt-32.png",
     "default_title": "Tureng Translate",
@@ -41,7 +44,7 @@
         "default": "Ctrl+Shift+Space"
       }
     },
-    "translate-in-popup": {
+    "translate_in_popup": {
       "suggested_key": {
         "default": "Ctrl+Space"
       },
