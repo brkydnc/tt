@@ -9,6 +9,7 @@ Features are handled using [webextension-polyfill](https://github.com/mozilla/we
 | Translate in popup                      |✔️        |✔️       |✔️      |
 | Translate selection in panel            |✔️        |✔️       |✔️      |
 | Translate selection in popup (shortcut) |✔️        |❌      |❌     |
+| Context menu                            |✔️        |❌      |❌     |
 
 # Packaging & Usage
 ### Firefox
@@ -17,8 +18,8 @@ You can download it from [firefox addons](https://addons.mozilla.org/firefox/add
 You have to turn on `Developer Mode` and then load the extension unpacked.
 
 # Known bugs
+* Chrome & Opera won't allow loading fonts.
 * Some sites won't allow loading fonts. (CSP) 
-* Fonts aren't loaded on Chrome & Opera.
 
 # Acknowledgements
 I 'd like to thank [oyavri](https://github.com/oyavri) for sharing his ideas, and [Tibrikci](https://github.com/Tibrikci) for designing the extension icon.
