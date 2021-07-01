@@ -55,9 +55,9 @@ function createTranslation(tr) {
 function createTranslationArray(tbodyArray) {
   return tbodyArray
     .map(tbody =>
-      [...tbody.children] // tr array
-        .slice(1) // remove column headers
-        .filter(tr => tr.attributes.length === 0) // remove hidden rows
+      [...tbody.children] // <tr> array
+        .slice(1) // Remove column headers
+        .filter(tr => tr.attributes.length === 0) // Remove hidden rows
         .map(createTranslation)
     )
 }
@@ -76,7 +76,7 @@ function createPronunciationArray(audioContainers) {
     });
 }
 
-// A flag element has attribute "data-accent".
+// A flag element has the attribute "data-accent".
 // A data accent has the format FROM_TO_FROM_accent (without underscores).
 // Examples: ENTRENus, ENTRENuk, ENFRFRfr, ENFRFRca.
 function getFlagURLByFlagElement(flagElement) {
@@ -85,12 +85,12 @@ function getFlagURLByFlagElement(flagElement) {
   return `https://asset.tureng.co/images/flag-${accent}.png`
 }
 
-// An audio element has a <source> in it, which is firstElementChild.
+// An audio element has a <source> in it, which is the first element child.
 //
-// If an element has src attribute without a protocol at the beginning,
-// accesses to this attribute gives us an URL that beings with "moz-extension".
-// to prevent this we use getAttribute("src") to get URL without a protocol and
-// then append "https:" manually.
+// If an element has a `src` attribute without a protocol at the beginning,
+// access to that attribute gives a URL which has "moz-extension" as the
+// protocol at the beginning. To prevent this we use `getAttribute("src")` to
+// get the URL without a protocol and then we append "https:" manually.
 function getAudioURLFromAudioElement(audioElement) {
   const URL = audioElement.firstElementChild.getAttribute("src");
   return "https:" + URL;
@@ -223,8 +223,8 @@ browser.storage.onChanged.addListener((changes, areaName) => {
 
 browser.runtime.onConnect.addListener(port => {
   // TODO:
-  //   Handle errors that occur when a promise tries to post message to a closed
-  //   port.
+  //   Handle errors that occur when a promise tries to post a message to a
+  //   closed port.
   //
   port.onMessage.addListener(msg => {
     if (msg.op === "translate") {
