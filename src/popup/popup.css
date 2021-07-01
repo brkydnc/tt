@@ -8,6 +8,7 @@
   --row-border: #272727;
   --scrollbar-track: #272727;
   --scrollbar-thumb: #6b6b6b;
+  --badge: #777777;
 }
 
 * {
@@ -107,6 +108,33 @@ body {
   max-width: 180px;
   padding: .1rem .5rem;
   vertical-align: middle;
+}
+
+.table-cell > * {
+  display: inline-block;
+  margin-right: 5px;
+  word-break: normal;
+}
+
+.table-cell > *:last-child {
+  margin-right: 0;
+}
+
+.badge {
+  min-width: 10px;
+  box-sizing: border-box;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  background-color: #777;
+  border-radius: 10px;
 }
 
 .suggestion-container {

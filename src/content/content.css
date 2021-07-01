@@ -155,3 +155,30 @@
   font-family: "Noto Sans";
   word-break: break-all;
 }
+
+.tureng-translate-table-cell > * {
+  display: inline-block;
+  margin-right: 5px;
+  word-break: normal;
+}
+
+.tureng-translate-table-cell > *:last-child {
+  margin-right: 0;
+}
+
+.tureng-translate-badge {
+  min-width: 10px;
+  box-sizing: border-box;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  background-color: #777;
+  border-radius: 10px;
+}

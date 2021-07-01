@@ -26,11 +26,23 @@ function createPronunciations(pronunciations) {
 }
 
 function createCellFromPhrase(phrase) {
-  const phraseCell = createElement("td", { className: "table-cell" }, phrase.content);
+  const phraseCell = createElement("td", { className: "table-cell" });
+
+  const contentEl = createElement("span", {}, `${phrase.content}`);
+  phraseCell.appendChild(contentEl);
+
   if (phrase.class) {
-    const classElement = createElement("i", {}, ` ${phrase.class}`);
+    const classElement = createElement("i", {}, `${phrase.class}`);
     phraseCell.appendChild(classElement);
   }
+
+  if (phrase.badges.length > 0) {
+    const badgeEls = phrase.badges
+      .map(b => createElement("span", { className: "badge" }, `${b}`));
+
+    phraseCell.append(...badgeEls);
+  }
+
   return phraseCell;
 }
 

@@ -112,12 +112,23 @@ class Panel extends Element {
 function createCellFromPhrase(phrase) {
   const phraseCell = createElement("td", {
     className: "tureng-translate-table-cell"
-  }, phrase.content);
+  });
+
+  const contentEl = createElement("span", {}, `${phrase.content}`);
+  phraseCell.appendChild(contentEl);
 
   if (phrase.class) {
     const classElement = createElement("i", {}, ` ${phrase.class}`);
     phraseCell.appendChild(classElement);
   }
+
+  if (phrase.badges.length > 0) {
+    const badgeEls = phrase.badges
+      .map(b => createElement("span", { className: "tureng-translate-badge" }, `${b}`));
+
+    phraseCell.append(...badgeEls);
+  }
+
 
   return phraseCell;
 }

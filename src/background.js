@@ -12,33 +12,42 @@ async function fetchDocument(term, dictionary) {
 //   phrase: Phrase {
 //     content: string,
 //     class: string | null,
+//     badges: string[],
 //   }
 //   meaning: Phrase {
 //     content: string,
 //     class: string | null,
+//     badges: string[],
 //   }
 // }
 function createTranslation(tr) {
   const [ctxEl, phraseEl, meaningEl] = [...tr.children].slice(1,4);
+
   const ctx = ctxEl.textContent;
+
   const phraseContent = phraseEl.firstElementChild.textContent;
-  const phraseClass = (phraseEl.children.length > 1)
-    ? phraseEl.lastElementChild.textContent.trim()
-    : null;
+  const phraseClassEl = phraseEl.getElementsByTagName("i")[0];
+  const phraseClass = (phraseClassEl) ? phraseClassEl.textContent.trim() : null;
+  const phraseBadges = [...phraseEl.getElementsByClassName("badge")]
+    .map(e => e.textContent);
+
   const meaningContent = meaningEl.firstElementChild.textContent;
-  const meaningClass = (meaningEl.children.length > 1)
-    ? meaningEl.lastElementChild.textContent.trim()
-    : null;
+  const meaningClassEl = meaningEl.getElementsByTagName("i")[0];
+  const meaningClass = (meaningClassEl) ? meaningClassEl.textContent.trim() : null;
+  const meaningBadges = [...meaningEl.getElementsByClassName("badge")]
+    .map(e => e.textContent);
 
   return {
     context: ctx,
     phrase: {
       content: phraseContent,
       class: phraseClass,
+      badges: phraseBadges,
     },
     meaning: {
       content: meaningContent,
       class: meaningClass,
+      badges: meaningBadges,
     }
   }
 }
