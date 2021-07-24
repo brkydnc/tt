@@ -46,13 +46,13 @@ function createCellFromPhrase(phrase) {
   return phraseCell;
 }
 
-function createTranslationTable({ term, translations, pronunciations }) {
+function createTranslationTable({ term, separator, pronunciations }) {
   const tableElement = createElement('table', { className: "table" });
   const tbody = createElement('table', { className: "table" });
   tableElement.appendChild(tbody);
 
-  const flattened = translations.flat();
-  flattened.forEach(({ context, phrase, meaning }) => {
+  const translations = Object.values(separator).flat();
+  translations.forEach(({ context, phrase, meaning }) => {
     const contextCell = createElement("td", {className: "table-cell"}, context);
     const phraseCell = createCellFromPhrase(phrase);
     const meaningCell = createCellFromPhrase(meaning);

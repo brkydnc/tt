@@ -52,14 +52,30 @@ function createTranslation(tr) {
   }
 }
 
-function createTranslationArray(tbodyArray) {
-  return tbodyArray
-    .map(tbody =>
-      [...tbody.children] // <tr> array
-        .slice(1) // Remove column headers
+// Separator {
+//   primary: Translation[]
+//   other: Translation[]
+// }
+function separateTranslations(tbodyArray) {
+  return tbodyArray.reduce((separator, tbody) => {
+    const header = tbody.parentElement.previousElementSibling;
+    // Remove <b> (term) tag insde <h2> for no confusion.
+    header.firstElementChild.remove();
+    // Determine if the table contains "other" translations
+    const isOther =  header.textContent.search("other") > -1
+
+    const translations = [...tbody.children]      // <tr> array
+        .slice(1)                                 // Remove column headers
         .filter(tr => tr.attributes.length === 0) // Remove hidden rows
         .map(createTranslation)
-    )
+
+    if (isOther)
+      separator.other.push(...translations)
+    else
+      separator.primary.push(...translations);
+
+    return separator
+  }, { primary: [], other: [] });
 }
 
 // Pronunciation {
@@ -98,7 +114,7 @@ function getAudioURLFromAudioElement(audioElement) {
 
 // {
 //    term: string
-//    translations: Translation[][]
+//    separator: Separator
 //    pronunciations: Pronunciation[]
 // }
 //
@@ -115,10 +131,10 @@ function scrape([term, doc]) {
     const [...tableBodies] = searchResults.getElementsByTagName("tbody");
     const [...audioContainers] = searchResults.getElementsByClassName("tureng-voice");
 
-    const translations = createTranslationArray(tableBodies);
+    const separator = separateTranslations(tableBodies);
     const pronunciations = createPronunciationArray(audioContainers)
 
-    const result = { term, translations, pronunciations }
+    const result = { term, separator, pronunciations }
     return { status: 0, value: result };
   }
 

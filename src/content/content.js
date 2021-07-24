@@ -74,7 +74,7 @@ class Panel extends Element {
     super(tag, id);
   }
 
-  setTranslation({term, translations, pronunciations}) {
+  setTranslation({term, separator, pronunciations}) {
     const container = createElement("div", {
       className: "tureng-translate-container"
     });
@@ -85,7 +85,7 @@ class Panel extends Element {
       className: "tureng-translate-pronunciation-container"
     });
     const pronunciationElements = createPronunciations(pronunciations);
-    const table = createTranslationTable(translations);
+    const table = createTranslationTable(separator);
 
     this.element.innerHTML = "";
 
@@ -133,13 +133,13 @@ function createCellFromPhrase(phrase) {
   return phraseCell;
 }
 
-function createTranslationTable(translations) {
+function createTranslationTable(separator) {
   const tableElement = createElement('div', { className: "tureng-translate-table" });
   const tbody = createElement('div', { className: "tureng-translate-table" });
   tableElement.appendChild(tbody);
 
-  const firstBody = translations[0];
-  firstBody.forEach(({ context, phrase, meaning }) => {
+  const translations = separator.primary;
+  translations.forEach(({ context, phrase, meaning }) => {
     const contextCell = createElement("div", { className: "tureng-translate-table-cell" }, context);
     const meaningCell = createCellFromPhrase(meaning);
     const tr = createElement("div", { className: "tureng-translate-table-row" });
@@ -186,6 +186,7 @@ document.addEventListener('selectionchange', (e) => {
 
 port.onMessage.addListener(({op, value}) => {
   if (op != "translateResult" || value.status !== 0) return;
+  if (value.value.separator.primary.length === 0) return;
 
   panel.setTranslation(value.value);
   button.show();
