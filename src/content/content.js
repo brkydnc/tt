@@ -74,7 +74,7 @@ class Panel extends Element {
     super(tag, id);
   }
 
-  setTranslation({term, separator, pronunciations}) {
+  setTranslation({ term, separator, pronunciations }) {
     const container = createElement("div", {
       className: "tureng-translate-container"
     });
@@ -176,21 +176,22 @@ function createPronunciations(pronunciations) {
 const button = new Button("div", "tureng-translate-button");
 const panel = new Panel("div", "tureng-translate-panel");
 
-const port = browser.runtime.connect({name: "content"});
+const port = browser.runtime.connect({ name: "content" });
+
 document.addEventListener('selectionchange', (e) => {
   port.postMessage({
-    op: "registerSelection",
-    value: document.getSelection().toString().trim()
+    type: "registerSelection",
+    payload: document.getSelection().toString().trim(),
   });
 });
 
-port.onMessage.addListener(({op, value}) => {
-  if (op != "translateResult" || value.status !== 0) return;
-  if (value.value.separator.primary.length === 0) return;
+port.onMessage.addListener(({ type, payload }) => {
+  if (type !== "translateResult" || payload.type !== "translation") return;
+  if (payload.data.separator.primary.length === 0) return;
 
-  panel.setTranslation(value.value);
+  panel.setTranslation(payload.data);
   button.show();
-})
+});
 
 button.element.addEventListener('mousedown', () => {
   button.hide();
@@ -229,8 +230,8 @@ const componentDependentDocumentListeners = [
       button.setPosition(x, y, 10, 10);
 
       port.postMessage({
-        op: "translate",
-        value: { term: selection, dictionary: undefined },
+        type: "translate",
+        payload: { term: selection, dictionary: "" }
       });
     }
   ],
@@ -253,8 +254,8 @@ function removeCDDListeners() {
 browser.storage.local.get({ disablePanel: false })
   .then(obj => {
     if (!obj.disablePanel && !elementsAppended) {
-      addCDDListeners();
       document.body.append(button.element, panel.element);
+      addCDDListeners();
       elementsAppended = true;
     }
   })
@@ -264,13 +265,13 @@ browser.storage.onChanged.addListener((changes, areaName) => {
   if (areaName != "local" || !changes.hasOwnProperty("disablePanel")) return;
 
   if (changes.disablePanel.newValue && elementsAppended) {
+    removeCDDListeners();
     button.element.remove();
     panel.element.remove();
-    removeCDDListeners();
     elementsAppended = false;
   } else if (!changes.disablePanel.newValue && !elementsAppended){
-    addCDDListeners();
     document.body.append(button.element, panel.element);
+    addCDDListeners();
     elementsAppended = true;
   }
 });

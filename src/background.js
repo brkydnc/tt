@@ -112,19 +112,21 @@ function getAudioURLFromAudioElement(audioElement) {
   return "https:" + URL;
 }
 
-// {
+// TranslationContext {
 //    term: string
 //    separator: Separator
 //    pronunciations: Pronunciation[]
 // }
 //
-// status
-//  0 FOUND 
-//  1 NOT FOUND
-//  2 SUGGESTION
+// ScrapeResult {
+//   type: "translation"       | "suggestion" | "notFound"
+//   data: TranslationContext  | string[]     | null
+// }
 function scrape([term, doc]) {
   const [searchResults] = doc.getElementsByClassName("tureng-searchresults-content");
-  if (!searchResults) return {status: 1, value: []};
+  // TODO: Consider if the line below is necessary.
+  if (!searchResults) return { type: "notFound", data: null };
+
   const termFound = !searchResults.classList.contains("tureng-page-suggest");
 
   if (termFound) {
@@ -133,20 +135,21 @@ function scrape([term, doc]) {
 
     const separator = separateTranslations(tableBodies);
     const pronunciations = createPronunciationArray(audioContainers)
+    const translationContext = { term, separator, pronunciations }
 
-    const result = { term, separator, pronunciations }
-    return { status: 0, value: result };
+    return { type: "translation", data: translationContext };
   }
 
   const [feedback] = searchResults.getElementsByTagName("h1");
   if (feedback.textContent === "Maybe the correct one is") {
-    const [suggestions] = searchResults.getElementsByClassName('suggestion-list');
-    const [...listElements] = suggestions.getElementsByTagName('li');
-    const terms = listElements.map(li => li.firstElementChild.textContent);
-    return { status: 2, value: terms };
+    const [list] = searchResults.getElementsByClassName('suggestion-list');
+    const [...listElements] = list.getElementsByTagName('li');
+    const suggestions = listElements.map(li => li.firstElementChild.textContent);
+
+    return { type: "suggestion", data: suggestions };
   }
 
-  return { status: 1, value: [] };
+  return { type: "notFound", data: null };
 }
 
 // Popup
@@ -165,8 +168,8 @@ const popup = {
   onConnect: function translateInPopup() {
     if (this.openedWith !== "translate_in_popup") return;
     this.port.postMessage({
-      op: "translateInPopup",
-      value: this.selectionRegister,
+      type: "translateInPopup",
+      payload: this.selectionRegister,
     });
   },
   onDisconnect: function clearOpenedWith() {
@@ -179,7 +182,7 @@ browser.storage.local.get({ dictionary: "turkish-english" })
   .catch(e => console.log(e));
 
 browser.commands.onCommand.addListener(name => {
-  const tip = name === "translate_in_popup" && popup.selectionRegister;
+  const tip = (name === "translate_in_popup") && popup.selectionRegister;
   if (!tip) return;
   popup.openedWith = name;
   browser.browserAction.openPopup();
@@ -237,19 +240,24 @@ browser.storage.onChanged.addListener((changes, areaName) => {
 
 // Port handling
 
+// Message {
+//   type: string
+//   payload: any
+// }
+
 browser.runtime.onConnect.addListener(port => {
   // TODO:
   //   Handle errors that occur when a promise tries to post a message to a
   //   closed port.
   //
-  port.onMessage.addListener(msg => {
-    if (msg.op === "translate") {
-      const term = msg.value.term;
-      const dictionary = msg.value.dictionary || popup.dictionary;
+  port.onMessage.addListener(({ type, payload }) => {
+    if (type === "translate") {
+      const term = payload.term;
+      const dictionary = payload.dictionary || popup.dictionary;
 
       fetchDocument(term, dictionary)
         .then(doc => {
-          const value = scrape([term, doc]);
+          const postPayload = scrape([term, doc]);
 
           if (popup.dictionary != dictionary) {
             popup.dictionary = dictionary;
@@ -257,13 +265,14 @@ browser.runtime.onConnect.addListener(port => {
           }
 
           port.postMessage({
-            op: "translateResult",
-            value
+            type: "translateResult",
+            payload: postPayload
           });
         });
-    } else if (msg.op === "updatePopupDictionary") {
-      popup.dictionary = msg.value;
-      browser.storage.local.set({ dictionary: msg.value });
+
+    } else if (type === "updatePopupDictionary") {
+      popup.dictionary = payload;
+      browser.storage.local.set({ dictionary: payload });
     }
   })
 
@@ -273,9 +282,9 @@ browser.runtime.onConnect.addListener(port => {
       break;
 
     case "content":
-      port.onMessage.addListener(msg => {
-        if (msg.op === "registerSelection")
-          popup.selectionRegister = msg.value;
+      port.onMessage.addListener(({ type, payload }) => {
+        if (type === "registerSelection")
+          popup.selectionRegister = payload;
       });
       break;
   }

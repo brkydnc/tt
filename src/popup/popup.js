@@ -85,22 +85,22 @@ function createSuggestions(terms) {
   return container;
 }
 
-function display({status, value}) {
+function display({type, data}) {
   output.innerHTML = '';
   pronunciationContainer.innerHTML = '';
 
   let result;
-  switch(status) {
-    case 0:
-      result = createTranslationTable(value);
-      const flags = createPronunciations(value.pronunciations);
+  switch(type) {
+    case "translation":
+      result = createTranslationTable(data);
+      const flags = createPronunciations(data.pronunciations);
       pronunciationContainer.append(...flags);
       break;
-    case 1:
-      result = createElement('h4', { className: "not-found" }, "Term not found.");
+    case "suggestion":
+      result = createSuggestions(data);
       break;
-    case 2:
-      result = createSuggestions(value);
+    case "notFound":
+      result = createElement('h4', { className: "not-found" }, "Term not found.");
       break;
   }
 
@@ -109,27 +109,27 @@ function display({status, value}) {
   input.focus();
 }
 
-const port = browser.runtime.connect({name: "popup"});
+const port = browser.runtime.connect({ name: "popup" });
 
 let timeout;
 function main(term, delay) {
   clearTimeout(timeout);
   timeout = setTimeout(() => {
     port.postMessage({
-      op: "translate",
-      value: { term, dictionary: dictionarySelect.value },
+      type: "translate",
+      payload: { term, dictionary: dictionarySelect.value },
     });
   }, delay);
 }
 
-port.onMessage.addListener(({ op, value }) => {
-  switch (op) {
+port.onMessage.addListener(({ type, payload }) => {
+  switch (type) {
     case "translateResult":
-      display(value)
+      display(payload)
       break;
     case "translateInPopup":
-      input.value = value;
-      main(value, 0);
+      input.value = payload;
+      main(payload, 0);
       break;
   }
 });
@@ -144,15 +144,15 @@ dictionarySelect.addEventListener('change', e => {
   window.localStorage.setItem("dictionary", e.target.value);
 
   port.postMessage({
-    op: "updatePopupDictionary",
-    value: e.target.value,
+    type: "updatePopupDictionary",
+    payload: e.target.value,
   });
 
   const term = input.value.trim();
   if (term) {
     port.postMessage({
-      op: "translate",
-      value: { term, dictionary: e.target.value },
+      type: "translate",
+      payload: { term, dictionary: e.target.value },
     });
   }
 });
