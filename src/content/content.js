@@ -134,9 +134,9 @@ function createCellFromPhrase(phrase) {
 }
 
 function createTranslationTable(separator) {
-  const tableElement = createElement('div', { className: "tureng-translate-table" });
-  const tbody = createElement('div', { className: "tureng-translate-table" });
-  tableElement.appendChild(tbody);
+  // Since we don't have <thead> or <tfoot>, we can omit <tbody> and append
+  // <tr>s directly into <table>
+  const table = createElement('div', { className: "tureng-translate-table" });
 
   const translations = separator.primary;
   translations.forEach(({ context, phrase, meaning }) => {
@@ -145,10 +145,10 @@ function createTranslationTable(separator) {
     const tr = createElement("div", { className: "tureng-translate-table-row" });
 
     tr.append(contextCell, meaningCell);
-    tbody.appendChild(tr);
+    table.appendChild(tr);
   });
 
-  return tableElement;
+  return table;
 }
 
 function createPronunciations(pronunciations) {

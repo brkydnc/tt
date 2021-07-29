@@ -47,9 +47,9 @@ function createCellFromPhrase(phrase) {
 }
 
 function createTranslationTable({ term, separator, pronunciations }) {
-  const tableElement = createElement('table', { className: "table" });
-  const tbody = createElement('table', { className: "table" });
-  tableElement.appendChild(tbody);
+  // Since we don't have <thead> or <tfoot>, we can omit <tbody> and append
+  // <tr>s directly into <table>
+  const table = createElement('table', { className: "table" });
 
   const translations = Object.values(separator).flat();
   translations.forEach(({ context, phrase, meaning }) => {
@@ -59,10 +59,10 @@ function createTranslationTable({ term, separator, pronunciations }) {
     const tr = createElement("tr", { className: "table-row" });
 
     tr.append(contextCell, phraseCell, meaningCell);
-    tbody.appendChild(tr);
+    table.appendChild(tr);
   });
 
-  return tableElement;
+  return table;
 }
 
 function createSuggestions(terms) {
