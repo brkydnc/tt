@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Tureng Translate",
   "short_name": "tt",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Translate words and phrases by using Tureng",
   "icons": {
     "48": "icons/tt-48.png",
