@@ -21,7 +21,7 @@ async function fetchDocument(term, dictionary) {
 //   }
 // }
 function createTranslation(tr) {
-  const [ctxEl, phraseEl, meaningEl] = [...tr.children].slice(1,4);
+  const [ctxEl, phraseEl, meaningEl] = [...tr.children].slice(1, 4);
 
   const ctx = ctxEl.textContent;
 
@@ -62,12 +62,12 @@ function separateTranslations(tbodyArray) {
     // Remove <b> (term) tag insde <h2> for no confusion.
     header.firstElementChild.remove();
     // Determine if the table contains "other" translations
-    const isOther =  header.textContent.search("other") > -1
+    const isOther = header.textContent.search("other") > -1
 
     const translations = [...tbody.children]      // <tr> array
-        .slice(1)                                 // Remove column headers
-        .filter(tr => tr.attributes.length === 0) // Remove hidden rows
-        .map(createTranslation)
+      .slice(1)                                 // Remove column headers
+      .filter(tr => tr.attributes.length === 0) // Remove hidden rows
+      .map(createTranslation)
 
     if (isOther)
       separator.other.push(...translations)
@@ -160,7 +160,7 @@ const popup = {
   selectionRegister: "",
   dictionary: "",
 
-  setPort: function(port) {
+  setPort: function (port) {
     this.port = port;
     port.onDisconnect.addListener(this.onDisconnect.bind(this));
     this.onConnect();
@@ -196,6 +196,11 @@ browser.browserAction.onClicked.addListener(() => {
 
 let contextMenuExists = false;
 
+function openInNewTab(info, tab) {
+  const url = `https://tureng.com/en/${popup.dictionary}/${info.selectionText}`;
+  browser.tabs.create({ url });
+}
+
 function createContextMenuIfNotExists() {
   if (contextMenuExists) return;
 
@@ -209,10 +214,7 @@ function createContextMenuIfNotExists() {
     },
   });
 
-  browser.menus.onClicked.addListener((info, tab) => {
-    const url = `https://tureng.com/en/${popup.dictionary}/${info.selectionText}`;
-    browser.tabs.create({ url });
-  });
+  browser.menus.onClicked.addListener(openInNewTab);
 
   contextMenuExists = true;
 }
@@ -220,6 +222,7 @@ function createContextMenuIfNotExists() {
 function removeContextMenuIfNotExists() {
   if (!contextMenuExists) return;
 
+  browser.menus.onClicked.removeListener(openInNewTab);
   browser.menus.remove("open-tureng-page");
 
   contextMenuExists = false;
