@@ -114,7 +114,7 @@ body {
 .table-cell > * {
   display: inline-block;
   margin-right: 5px;
-  word-break: normal;
+  word-break: break-all;
 }
 
 .table-cell > *:last-child {
