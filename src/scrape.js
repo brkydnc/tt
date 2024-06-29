@@ -1,4 +1,4 @@
-export async function fetchDocument(term, dictionary, parseDom) {
+async function fetchDocument(term, dictionary, parseDom) {
     const res = await fetch(`https://tureng.com/en/${dictionary}/${term}`);
     const text = await res.text();
     const doc = parseDom(text, 'text/html');
@@ -15,7 +15,7 @@ export async function fetchDocument(term, dictionary, parseDom) {
 //   type: "translation"       | "suggestion" | "notFound"
 //   data: TranslationContext  | string[]     | null
 // }
-export function scrape([term, doc]) {
+function scrape([term, doc]) {
     // First of all, test if the page contains the "container of everything".
     const [searchResults] = doc.getElementsByClassName("tureng-searchresults-content");
 
@@ -59,7 +59,7 @@ export function scrape([term, doc]) {
 //   primary: Translation[]
 //   other: Translation[]
 // }
-export function separateTranslations(tbodyArray) {
+function separateTranslations(tbodyArray) {
     return tbodyArray.reduce((separator, tbody) => {
         const header = tbody.parentElement.previousElementSibling;
         // Remove <b> (term) tag insde <h2> for no confusion.
@@ -95,7 +95,7 @@ export function separateTranslations(tbodyArray) {
 //     badges: string[],
 //   }
 // }
-export function createTranslation(tr) {
+function createTranslation(tr) {
     const [ctxEl, phraseEl, meaningEl] = [...tr.children].slice(1,4);
 
     const ctx = ctxEl.textContent;
@@ -131,7 +131,7 @@ export function createTranslation(tr) {
 //   audio: URL,
 //   flag: URL,
 // }
-export function createPronunciationArray(audioContainers) {
+function createPronunciationArray(audioContainers) {
     return audioContainers
         .map(container => {
             const [audioElement, flagElement] = container.children;

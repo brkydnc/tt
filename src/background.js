@@ -1,4 +1,4 @@
-import { * } from "./scrap.js";
+// import { * } from "./scrap.js";
 
 const domParser = new DOMParser();
 const parseDom = (a, b) => domParser.parseFromString(a, b);
@@ -6,7 +6,7 @@ const parseDom = (a, b) => domParser.parseFromString(a, b);
 // A flag element has the attribute "data-accent".
 // A data accent has the format FROM_TO_FROM_accent (without underscores).
 // Examples: ENTRENus, ENTRENuk, ENFRFRfr, ENFRFRca.
-export function getFlagURLByFlagElement(flagElement) {
+function getFlagURLByFlagElement(flagElement) {
   const dataAccent = flagElement.getAttribute("data-accent");
   const accent = dataAccent.substr(6, 2);
   return `https://asset.tureng.co/images/flag-${accent}.png`
@@ -18,7 +18,7 @@ export function getFlagURLByFlagElement(flagElement) {
 // access to that attribute gives a URL which has "moz-extension" as the
 // protocol at the beginning. To prevent this we use `getAttribute("src")` to
 // get the URL without a protocol and then we append "https:" manually.
-export function getAudioURLFromAudioElement(audioElement) {
+function getAudioURLFromAudioElement(audioElement) {
   const URL = audioElement.firstElementChild.getAttribute("src");
   return "https:" + URL;
 }

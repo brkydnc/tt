@@ -21,6 +21,7 @@
     "scripts": [
       "src/browser-polyfill.min.js",
       "src/utils.js",
+      "src/scrape.js",
       "src/background.js"
     ]
   },
