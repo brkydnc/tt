@@ -1,27 +1,8 @@
-// import { * } from "./scrap.js";
+import { fetchDocument, scrape } from "./scrape";
+import { browser } from 'webextension-polyfill';
 
 const domParser = new DOMParser();
 const parseDom = (a, b) => domParser.parseFromString(a, b);
-
-// A flag element has the attribute "data-accent".
-// A data accent has the format FROM_TO_FROM_accent (without underscores).
-// Examples: ENTRENus, ENTRENuk, ENFRFRfr, ENFRFRca.
-function getFlagURLByFlagElement(flagElement) {
-  const dataAccent = flagElement.getAttribute("data-accent");
-  const accent = dataAccent.substr(6, 2);
-  return `https://asset.tureng.co/images/flag-${accent}.png`
-}
-
-// An audio element has a <source> in it, which is the first element child.
-//
-// If an element has a `src` attribute without a protocol at the beginning,
-// access to that attribute gives a URL which has "moz-extension" as the
-// protocol at the beginning. To prevent this we use `getAttribute("src")` to
-// get the URL without a protocol and then we append "https:" manually.
-function getAudioURLFromAudioElement(audioElement) {
-  const URL = audioElement.firstElementChild.getAttribute("src");
-  return "https:" + URL;
-}
 
 // Popup
 const popup = {
@@ -30,7 +11,7 @@ const popup = {
   selectionRegister: "",
   dictionary: "",
 
-  setPort: function(port) {
+  setPort: function (port) {
     this.port = port;
     port.onDisconnect.addListener(this.onDisconnect.bind(this));
     this.onConnect();
@@ -63,7 +44,6 @@ browser.browserAction.onClicked.addListener(() => {
 });
 
 // Context menu
-
 let contextMenuExists = false;
 
 function createContextMenuIfNotExists() {

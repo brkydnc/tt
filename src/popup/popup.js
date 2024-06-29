@@ -1,3 +1,5 @@
+import { browser } from 'webextension-polyfill';
+
 const createElement = utils.createElement
 
 const input = document.getElementById("input");
@@ -53,7 +55,7 @@ function createTranslationTable({ term, separator, pronunciations }) {
 
   const translations = Object.values(separator).flat();
   translations.forEach(({ context, phrase, meaning }) => {
-    const contextCell = createElement("td", {className: "table-cell"}, context);
+    const contextCell = createElement("td", { className: "table-cell" }, context);
     const phraseCell = createCellFromPhrase(phrase);
     const meaningCell = createCellFromPhrase(meaning);
     const tr = createElement("tr", { className: "table-row" });
@@ -67,10 +69,10 @@ function createTranslationTable({ term, separator, pronunciations }) {
 
 function createSuggestions(terms) {
   const handle = term => main(term, 0);
-  const ol = createElement('ol', { className: "suggestion-list"});
+  const ol = createElement('ol', { className: "suggestion-list" });
 
   terms.forEach(term => {
-    const li = createElement('li', {className: "suggestion"}, term);
+    const li = createElement('li', { className: "suggestion" }, term);
     li.setAttribute('tabindex', '0')
     li.onclick = () => handle(term);
     li.onkeyup = (e) => { if (e.key === "Enter") handle(term) };
@@ -79,18 +81,18 @@ function createSuggestions(terms) {
   });
 
   const feedback = createElement('h4', { className: "suggestion-header" }, "Maybe the correct one is:");
-  const container = createElement('div', {className: "suggestion-container" });
+  const container = createElement('div', { className: "suggestion-container" });
   container.append(feedback, ol);
 
   return container;
 }
 
-function display({type, data}) {
+function display({ type, data }) {
   output.innerHTML = '';
   pronunciationContainer.innerHTML = '';
 
   let result;
-  switch(type) {
+  switch (type) {
     case "translation":
       result = createTranslationTable(data);
       const flags = createPronunciations(data.pronunciations);

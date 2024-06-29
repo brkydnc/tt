@@ -1,5 +1,5 @@
-const utils = (function() {
-  function createElement(tag, props={}, text="") {
+const utils = (function () {
+  function createElement(tag, props = {}, text = "") {
     const element = document.createElement(tag);
     Object.assign(element, props);
     if (!text) return element;
@@ -36,7 +36,7 @@ const utils = (function() {
         : (y2 > border.y2) ? border.y2 - height : y,
     };
 
-    return reference; 
+    return reference;
   }
 
 
