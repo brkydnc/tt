@@ -1,5 +1,5 @@
 import { fetchDocument, scrape } from "./scrape";
-import { browser } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 
 const domParser = new DOMParser();
 const parseDom = (a, b) => domParser.parseFromString(a, b);

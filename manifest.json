@@ -20,12 +20,12 @@
   "browser_action": {
     "default_icon": "icons/tt-32.png",
     "default_title": "Tureng Translate",
-    "default_popup": "out/popup/popup.html"
+    "default_popup": "out/popup.html"
   },
   "background": {
     "scripts": [
-      "out/background/scrape.js",
-      "out/background/background.js"
+      "out/scrape.js",
+      "out/background.js"
     ]
   },
   "content_scripts": [

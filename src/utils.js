@@ -1,4 +1,4 @@
-const utils = (function () {
+export const utils = (function () {
   function createElement(tag, props = {}, text = "") {
     const element = document.createElement(tag);
     Object.assign(element, props);

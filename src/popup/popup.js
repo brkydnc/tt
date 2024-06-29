@@ -1,4 +1,6 @@
-import { browser } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
+import { utils } from '../utils'
+import './popup.css';
 
 const createElement = utils.createElement
 

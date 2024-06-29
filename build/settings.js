@@ -29,30 +29,26 @@ export const popupSettings = {
   entryPoints: [
     "src/popup/popup.html",
   ],
-  plugins: [html({
-    entryNames: 'popup/[name]',
-  })],
+  plugins: [html()],
   bundle: true,
   write: true,
   minify: true,
   sourcemap: true,
   outdir: "out",
-  assetNames: 'popup/[name]',
+  assetNames: '[name]',
 }
 
 export const optionsSettings = {
   entryPoints: [
     "src/options/options.html",
   ],
-  plugins: [html({
-    entryNames: 'options/[name]',
-  })],
+  plugins: [html()],
   bundle: true,
   write: true,
   minify: true,
   sourcemap: true,
   outdir: "out",
-  assetNames: 'options/[name]',
+  assetNames: '[name]',
 }
 
 await Promise.all([backgroundSettings, contentSettings, optionsSettings, popupSettings].map(esbuild.build));
