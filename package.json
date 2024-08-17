@@ -7,14 +7,22 @@
   "author": "Berkay Dinç <berkayydinc@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "clean": "rm tt.xpi && rm -rf out/ ",
     "test": "node --inspect --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "build": "node build/settings.js"
+    "build": "node esbuild/build.js",
+    "serve-popup": "node esbuild/serve-popup.js"
   },
   "devDependencies": {
     "@esbuilder/html": "^0.0.6",
-    "esbuild": "0.21.5",
+    "adm-zip": "^0.5.15",
+    "esbuild": "0.23.1",
     "jest": "^29.7.0",
-    "jsdom": "^24.1.0",
-    "webextension-polyfill": "^0.7.0"
+    "jsdom": "^24.1.1",
+    "open": "^10.1.0"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "webextension-polyfill": "^0.12.0"
   }
 }

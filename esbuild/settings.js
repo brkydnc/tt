@@ -1,5 +1,19 @@
-import esbuild from 'esbuild';
-import { html } from '@esbuilder/html'
+import html from "@esbuilder/html";
+
+const PACKAGE_NAME = "tt.xpi";
+
+export const makeProductionBuild = settings => ({
+  ...settings,
+  define: { "window.__IS_PRODUCTION_BUILD": "true" },
+});
+
+export const packageArtifacts = () => {
+  const zip = new AdmZip();
+  zip.addLocalFolder('out', 'out');
+  zip.addLocalFolder('icons', 'icons');
+  zip.addLocalFile('manifest.json');
+  zip.writeZip(PACKAGE_NAME);
+}
 
 export const backgroundSettings = {
   entryPoints: [
@@ -26,13 +40,10 @@ export const contentSettings = {
 }
 
 export const popupSettings = {
-  entryPoints: [
-    "src/popup/popup.html",
-  ],
+  entryPoints: ["src/popup/popup.html",],
   plugins: [html()],
   bundle: true,
   write: true,
-  minify: true,
   sourcemap: true,
   outdir: "out",
   assetNames: '[name]',
@@ -50,5 +61,3 @@ export const optionsSettings = {
   outdir: "out",
   assetNames: '[name]',
 }
-
-await Promise.all([backgroundSettings, contentSettings, optionsSettings, popupSettings].map(esbuild.build));

@@ -46,3 +46,6 @@ export const utils = (function () {
     limitBox,
   }
 })();
+
+export const isProductionBuild = () => Boolean(window["__IS_PRODUCTION_BUILD"]);
+export const isDevelopmentBuild = () => !isProductionBuild();
