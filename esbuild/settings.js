@@ -24,6 +24,7 @@ export const backgroundSettings = {
   minify: true,
   sourcemap: true,
   outdir: "out",
+  platform: "browser",
 }
 
 export const contentSettings = {
@@ -37,6 +38,7 @@ export const contentSettings = {
   minify: true,
   sourcemap: true,
   outdir: "out",
+  platform: "browser",
 }
 
 export const popupSettings = {
@@ -47,6 +49,7 @@ export const popupSettings = {
   sourcemap: true,
   outdir: "out",
   assetNames: '[name]',
+  platform: "browser",
 }
 
 export const optionsSettings = {
@@ -60,4 +63,5 @@ export const optionsSettings = {
   sourcemap: true,
   outdir: "out",
   assetNames: '[name]',
+  platform: "browser",
 }
