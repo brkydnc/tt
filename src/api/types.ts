@@ -38,8 +38,8 @@ export interface Phrase {
 }
 
 export interface Pronunciation {
-  audio: URL,
-  flag: URL,
+  audioSrc: URL,
+  flagSrc: URL,
 }
 
 export enum Dictionary {

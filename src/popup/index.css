@@ -24,9 +24,17 @@ html {
   scrollbar-width: auto;
 }
 
-html::-webkit-scrollbar {width: 13px;}
-html::-webkit-scrollbar-thumb {background: var(--scrollbar-thumb);}
-html::-webkit-scrollbar-track {background: var(--scrollbar-track);}
+html::-webkit-scrollbar {
+  width: 13px;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+}
+
+html::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
 
 body {
   background: var(--background-light);
@@ -111,13 +119,13 @@ body {
   vertical-align: middle;
 }
 
-.table-cell > * {
+.table-cell>* {
   display: inline-block;
   margin-right: 5px;
   word-break: break-all;
 }
 
-.table-cell > *:last-child {
+.table-cell>*:last-child {
   margin-right: 0;
 }
 
@@ -143,12 +151,16 @@ body {
   padding: .3rem;
 }
 
-.suggestion-list { list-style-position: inside; }
+.suggestion-list {
+  list-style-position: inside;
+}
 
-.suggestion:hover, .suggestion:focus {
+.suggestion:hover,
+.suggestion:focus {
   cursor: pointer;
   background: var(--background-light);
 }
+
 .suggestion::marker {
   font-weight: bold;
 }

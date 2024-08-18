@@ -1,4 +1,4 @@
-import html from "@esbuilder/html";
+import CssModulesPlugin from "esbuild-css-modules-plugin";
 
 const PACKAGE_NAME = "tt.xpi";
 
@@ -42,21 +42,28 @@ export const contentSettings = {
 }
 
 export const popupSettings = {
-  entryPoints: ["src/popup/popup.html",],
-  plugins: [html()],
-  bundle: true,
-  write: true,
-  sourcemap: true,
+  entryPoints: [
+    "src/popup/index.tsx",
+    "src/popup/index.html",
+    "src/popup/index.css",
+  ],
   outdir: "out",
-  assetNames: '[name]',
-  platform: "browser",
+  loader: {
+    '.html': 'copy',
+    '.css': 'copy'
+  },
+  entryNames: 'popup/[name]',
+  write: true,
+  bundle: true,
+  sourcemap: true,
+  minify: true,
 }
 
 export const optionsSettings = {
   entryPoints: [
     "src/options/options.html",
   ],
-  plugins: [html()],
+  plugins: [],
   bundle: true,
   write: true,
   minify: true,

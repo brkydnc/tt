@@ -11,4 +11,4 @@ const url = `http://${host}:${port}`;
 console.log("Watching files...");
 console.log(`Serving files at ${url}`);
 
-open(url + '/popup.html');
+// open(url + '/popup.html');

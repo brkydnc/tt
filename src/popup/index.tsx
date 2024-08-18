@@ -1,7 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 
-import Popup from "./Popup";
+import Popup from "./components/Popup";
 
 // import { isDevelopmentBuild } from "../utils";
 // Listen for esbuild changes in development.

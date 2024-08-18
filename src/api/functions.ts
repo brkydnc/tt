@@ -143,9 +143,9 @@ export function createPronunciations(audioContainers: Element[]): Pronunciation[
   return audioContainers.map(container => {
     const [audioElement, flagElement] = container.children;
     if (!audioElement || !flagElement) throw new ElementNotFoundError();
-    const flag = getFlagURLByFlagElement(flagElement);
-    const audio = getAudioURLFromAudioElement(audioElement);
-    return { audio, flag }
+    const flagSrc = getFlagURLByFlagElement(flagElement);
+    const audioSrc = getAudioURLFromAudioElement(audioElement);
+    return { audioSrc, flagSrc }
   });
 }
 
