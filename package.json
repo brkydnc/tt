@@ -10,12 +10,13 @@
     "./src/utils/dom.ts": "./src/utils/shims/dom.ts"
   },
   "scripts": {
-    "clean": "rm tt.xpi && rm -rf build/ ",
     "test": "jest",
-    "build": "node esbuild/build-all.js",
-    "serve-popup": "node esbuild/serve-popup.js"
+    "clean": "rm tt.xpi && rm -rf build/ ",
+    "build": "node esbuild/build.js",
+    "serve": "node esbuild/serve.js"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.5",
     "@types/jest": "^29.5.12",
     "@types/jsdom": "^21.1.7",
     "@types/react": "^18.3.3",

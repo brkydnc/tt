@@ -33,11 +33,10 @@
         "<all_urls>"
       ],
       "js": [
-        "utils.js",
-        "content/content.js"
+        "content/index.js"
       ],
       "css": [
-        "content/content.css"
+        "content/index.css"
       ]
     }
   ],
