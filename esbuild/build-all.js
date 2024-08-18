@@ -10,4 +10,4 @@ await Promise.all([
 ].map(esbuild.build));
 
 // Package
-//packageArtifacts();
+packageArtifacts();

@@ -1,6 +1,7 @@
-import CssModulesPlugin from "esbuild-css-modules-plugin";
+import AdmZip from 'adm-zip';
 
-const PACKAGE_NAME = "tt.xpi";
+export const PACKAGE_NAME = "tt.xpi";
+export const OUT_DIR = "build";
 
 export const makeProductionBuild = settings => ({
   ...settings,
@@ -9,7 +10,7 @@ export const makeProductionBuild = settings => ({
 
 export const packageArtifacts = () => {
   const zip = new AdmZip();
-  zip.addLocalFolder('out', 'out');
+  zip.addLocalFolder(OUT_DIR, '.');
   zip.addLocalFolder('icons', 'icons');
   zip.addLocalFile('manifest.json');
   zip.writeZip(PACKAGE_NAME);
@@ -37,7 +38,7 @@ export const contentSettings = {
   write: true,
   minify: true,
   sourcemap: true,
-  outdir: "out",
+  outdir: OUT_DIR,
   platform: "browser",
 }
 
@@ -47,7 +48,7 @@ export const popupSettings = {
     "src/popup/index.html",
     "src/popup/index.css",
   ],
-  outdir: "out",
+  outdir: OUT_DIR,
   loader: {
     '.html': 'copy',
     '.css': 'copy'
@@ -68,7 +69,7 @@ export const optionsSettings = {
   write: true,
   minify: true,
   sourcemap: true,
-  outdir: "out",
+  outdir: OUT_DIR,
   assetNames: '[name]',
   platform: "browser",
 }

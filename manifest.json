@@ -15,17 +15,16 @@
     "menus"
   ],
   "options_ui": {
-    "page": "out/options/options.html"
+    "page": "options/options.html"
   },
   "browser_action": {
     "default_icon": "icons/tt-32.png",
     "default_title": "Tureng Translate",
-    "default_popup": "out/popup.html"
+    "default_popup": "popup/index.html"
   },
   "background": {
     "scripts": [
-      "out/scrape.js",
-      "out/background.js"
+      "background/background.js"
     ]
   },
   "content_scripts": [
@@ -34,11 +33,11 @@
         "<all_urls>"
       ],
       "js": [
-        "out/utils.js",
-        "out/content/content.js"
+        "utils.js",
+        "content/content.js"
       ],
       "css": [
-        "out/content/content.css"
+        "content/content.css"
       ]
     }
   ],

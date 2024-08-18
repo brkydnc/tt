@@ -1,5 +1,5 @@
 node_modules/
 *.xpi
 notes.md
-out/
+build/
 coverage/

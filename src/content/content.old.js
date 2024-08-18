@@ -11,7 +11,7 @@ class Element {
   setStyle(obj) {
     Object.assign(this._style, obj);
     this.element.style = utils.createStyleString(this._style);
-  } 
+  }
 
   show() {
     this.setStyle({ visibility: "visible" })
@@ -22,13 +22,13 @@ class Element {
   }
 
   setPosition(cx, cy, offsetX = 0, offsetY = 0) {
-    const area = { 
+    const area = {
       x: window.innerWidth
-      || document.documentElement.clientWidth
-      || document.body.clientWidth,
+        || document.documentElement.clientWidth
+        || document.body.clientWidth,
       y: window.innerHeight
-      || document.documentElement.clientHeight
-      || document.body.clientHeight,
+        || document.documentElement.clientHeight
+        || document.body.clientHeight,
     }
 
     const { x, y } = utils.limitBox(
@@ -58,9 +58,9 @@ class Button extends Element {
   show() {
     super.show();
     this.element.animate([
-      {transform: 'scale(0.9)'},
-      {transform: 'scale(1.05)'},
-      {transform: 'scale(1.0)'},
+      { transform: 'scale(0.9)' },
+      { transform: 'scale(1.05)' },
+      { transform: 'scale(1.0)' },
     ], {
       id: "pop",
       duration: 100,
@@ -101,11 +101,11 @@ class Panel extends Element {
     this.element.animate({
       opacity: [0, 1],
     },
-    {
-      id: "fade-in",
-      duration: 100,
-      easing: "ease-out",
-    });
+      {
+        id: "fade-in",
+        duration: 100,
+        easing: "ease-out",
+      });
   }
 }
 
@@ -269,7 +269,7 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     button.element.remove();
     panel.element.remove();
     elementsAppended = false;
-  } else if (!changes.disablePanel.newValue && !elementsAppended){
+  } else if (!changes.disablePanel.newValue && !elementsAppended) {
     document.body.append(button.element, panel.element);
     addCDDListeners();
     elementsAppended = true;
