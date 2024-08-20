@@ -1,0 +1,38 @@
+@use "base";
+
+.table {
+  width: 100%;
+  font-size: 0.9rem;
+  font-family: base.$font-family;
+  color: base.$white;
+  overflow-wrap: break-word;
+}
+
+.row {
+  background: base.$lightgray;
+  border: 1px solid base.$darkgray;
+
+  &:nth-child(odd) {
+    background: base.$gray;
+  }
+}
+
+.cell {
+  max-width: 180px;
+  padding: 0.1rem 0.5rem;
+  vertical-align: middle;
+
+  * {
+    display: inline-block;
+    margin-right: 5px;
+  }
+}
+
+.badge {
+  padding: 3px 7px;
+  font-size: 12px;
+  line-height: 1;
+  border-radius: 10px;
+  font-weight: bold;
+  background-color: base.$silver;
+}

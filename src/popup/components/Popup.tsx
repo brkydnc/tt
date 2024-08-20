@@ -1,10 +1,10 @@
+import { Tureng, TurengAPI } from "@api/tureng";
+import { Dictionary, SearchResult, SearchResultKind } from "@api/types";
+import { SuggestionTable as RawSuggestionTable, SuggestionTableProps } from "@/components/SuggestionTable";
+import { TranslationTable } from "@/components/TranslationTable";
 import React, { useEffect, useState } from "react";
-import { Tureng, TurengAPI } from "../../api/tureng";
-import { Dictionary, SearchResult, SearchResultKind } from "../../api/types";
 import { SearchPanel } from "./SearchPanel";
-import { Translation } from "./Translation";
-import { Suggestion } from "./Suggestion";
-import { NotFound } from "./NotFound";
+import styles from '../styles/Popup.module.scss';
 
 const TYPING_DELAY = 200;
 
@@ -13,8 +13,8 @@ const tureng = new Tureng() as TurengAPI;
 
 export default function Popup(): JSX.Element {
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
-  const [phrase, setPhrase] = useState('');
-  const [dictionary, setDictionary] = useState(Dictionary.Turkish);
+  const [phrase, setPhrase] = useState('hello');
+  const [dictionary, setDictionary] = useState(Dictionary.Spanish);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -54,7 +54,7 @@ export default function Popup(): JSX.Element {
   }, [phrase]);
 
   return (
-    <div id="output">
+    <div className={styles.popup}>
       <SearchPanel
         phrase={phrase}
         setPhrase={setPhrase}
@@ -69,11 +69,28 @@ export default function Popup(): JSX.Element {
       {
         // If a request is loading, has failed, do not render the previous search result.
         (!loading || failed) && <>
-          {searchResult?.kind === SearchResultKind.Translation && <Translation {...searchResult.data} />}
-          {searchResult?.kind === SearchResultKind.Suggestion && <Suggestion {...{ ...searchResult.data, setPhrase }} />}
+          {searchResult?.kind === SearchResultKind.Translation && <TranslationTable variant="popup" {...searchResult.data} />}
+          {searchResult?.kind === SearchResultKind.Suggestion && <SuggestionTable {...{ ...searchResult.data, setPhrase }} />}
           {searchResult?.kind === SearchResultKind.NotFound && <NotFound />}
         </>
       }
     </div>
+  );
+}
+
+function SuggestionTable(props: SuggestionTableProps): JSX.Element {
+  return (
+    <div className="suggestion-container">
+      <h4 className="suggestion-header">
+        Maybe the correct one is:
+      </h4>
+      <RawSuggestionTable {...props} />
+    </div>
+  );
+}
+
+function NotFound(): JSX.Element {
+  return (
+    <h4 className="not-found">Phrase not found</h4>
   );
 }

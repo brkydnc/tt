@@ -1,0 +1,33 @@
+@use "@styles/base";
+
+.container {
+  display: flex;
+  gap: 0.2rem;
+  padding: 0.3rem 0.5rem;
+  min-width: 180px;
+  position: sticky;
+  top: 0;
+  font-size: 0.9rem;
+  font-family: base.$font-family;
+  border-bottom: 2px solid base.$red;
+  color: base.$white;
+  background: base.$lightgray;
+}
+
+.input {
+  flex: 1;
+}
+
+.dictionary {
+  user-select: none;
+
+  &:hover {
+    color: #dfdfdf;
+  }
+}
+
+.pronunciationContainer {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}

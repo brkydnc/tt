@@ -1,7 +1,10 @@
 import React from "react";
-import { Dictionary, Pronunciation as PronunciationProps } from "../../api/types";
+import { Dictionary } from "@/api/types";
+import { Pronunciation, PronunciationProps } from "@/components/Pronunciation";
 
-interface SearchInputProps {
+import styles from '../styles/SearchPanel.module.scss';
+
+export interface SearchInputProps {
   phrase: string,
   setPhrase: (value: string) => void,
   dictionary: Dictionary,
@@ -11,22 +14,22 @@ interface SearchInputProps {
 
 export function SearchPanel(props: SearchInputProps): JSX.Element {
   return (
-    <div id="input-container">
+    <div className={styles.container}>
       <input
-        id="input"
+        className={styles.input}
         autoComplete="off"
         placeholder="Translate..."
         value={props.phrase}
         onChange={e => props.setPhrase(e.target.value)}
       />
 
-      <div id="pronunciation-container">
+      <div className={styles.pronunciationContainer}>
         {/* TODO: Use "accent" as key. */}
         {props.pronunciations.map(props => <Pronunciation {...props} />)}
       </div>
 
       <select
-        id="dictionary"
+        className={styles.dictionary}
         value={props.dictionary}
         onChange={e => props.setDictionary(e.target.value as Dictionary)}
       >
@@ -37,16 +40,4 @@ export function SearchPanel(props: SearchInputProps): JSX.Element {
       </select>
     </div>
   )
-}
-
-function Pronunciation(props: PronunciationProps): JSX.Element {
-  return (
-    <div
-      className="pronunciation"
-      style={{ backgroundImage: `url(${props.flagSrc})` }}
-    >
-      {/* TODO: Actually play the audio. */}
-      <audio src={props.audioSrc.toString()} />
-    </div >
-  );
 }

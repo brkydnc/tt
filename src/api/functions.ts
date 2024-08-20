@@ -1,6 +1,6 @@
 import { ElementNotFoundError } from "./errors";
 import { SearchResultKind, SearchResult, TranslationEntry, Pronunciation, Dictionary } from "./types";
-import { parseFromString } from "../utils/dom";
+import { parseFromString } from "../common/dom";
 
 // Fetches the document from the given dictionary and for the given phrase.
 export async function fetchDocument(phrase: string, dictionary: Dictionary): Promise<Document> {

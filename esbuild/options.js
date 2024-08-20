@@ -1,3 +1,6 @@
+import { sassPlugin, postcssModules } from "esbuild-sass-plugin";
+import path from "node:path";
+
 export const PACKAGE_NAME = "tt.xpi";
 export const OUT_DIR = "build";
 
@@ -6,16 +9,38 @@ export const makeProductionBuild = (options) => ({
   define: { "window.__IS_PRODUCTION_BUILD": "true" },
 });
 
+const sassPluginImportMappings = {
+  "@styles/": "./src/styles/",
+  "@assets/": "./src/assets/",
+};
+
+// Resolve import aliases in SCSS files.
+const esbuildSassPluginImportMapper = importPath => {
+  for (const [k, v] of Object.entries(sassPluginImportMappings)) {
+    importPath = importPath.replace(k, path.resolve(process.cwd(), v) + "/");
+  }
+
+  return importPath;
+}
+
 const commonOptions = {
   outdir: OUT_DIR,
   write: true,
   bundle: true,
   sourcemap: true,
   minify: true,
+  plugins: [
+    sassPlugin({
+      transform: postcssModules({}),
+      importMapper: esbuildSassPluginImportMapper,
+    }),
+  ],
   loader: {
     '.html': 'copy',
-    '.css': 'copy'
+    '.ttf': 'copy',
   },
+  assetNames: "[dir]/[name]",
+  outbase: "src",
 }
 
 export const backgroundScriptOptions = {
@@ -32,7 +57,6 @@ export const contentScriptOptions = {
   entryPoints: [
     "src/content/index.tsx",
     "src/content/index.html",
-    "src/content/index.css",
   ],
 }
 
@@ -42,7 +66,6 @@ export const popupPageOptions = {
   entryPoints: [
     "src/popup/index.tsx",
     "src/popup/index.html",
-    "src/popup/index.css",
   ],
 }
 
@@ -52,6 +75,5 @@ export const optionsPageOption = {
   entryPoints: [
     "src/options/options.js",
     "src/options/options.html",
-    "src/options/options.css",
   ],
 }
