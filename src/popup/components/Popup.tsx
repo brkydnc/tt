@@ -13,7 +13,7 @@ const tureng = new Tureng() as TurengAPI;
 
 export default function Popup(): JSX.Element {
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
-  const [phrase, setPhrase] = useState('hello');
+  const [phrase, setPhrase] = useState('asdf');
   const [dictionary, setDictionary] = useState(Dictionary.Spanish);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -80,17 +80,15 @@ export default function Popup(): JSX.Element {
 
 function SuggestionTable(props: SuggestionTableProps): JSX.Element {
   return (
-    <div className="suggestion-container">
-      <h4 className="suggestion-header">
-        Maybe the correct one is:
-      </h4>
+    <>
+      <h4 className={styles.feedback}>Maybe the correct one is:</h4>
       <RawSuggestionTable {...props} />
-    </div>
+    </>
   );
 }
 
 function NotFound(): JSX.Element {
   return (
-    <h4 className="not-found">Phrase not found</h4>
+    <h4 className={styles.feedback}>Phrase not found</h4>
   );
 }

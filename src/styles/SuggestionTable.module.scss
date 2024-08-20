@@ -1,0 +1,21 @@
+@use "base";
+
+.container {
+  background: base.$gray;
+  padding: 0 0.5rem 0.5rem 0.5rem;
+}
+
+.list {
+  color: base.$white;
+  font-family: base.$font-family;
+}
+
+.suggestion {
+  display: block;
+
+  &:hover,
+  &:focus {
+    cursor: pointer;
+    background: base.$lightgray;
+  }
+}
