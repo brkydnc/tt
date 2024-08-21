@@ -9,13 +9,14 @@ export const zipBuildArtifacts = () => {
   zip.writeZip(PACKAGE_NAME);
 }
 
-Promise.all([
+export const ALL = [
   // backgroundScriptOptions,
   contentScriptOptions,
   optionsPageOption,
   popupPageOptions,
   iconsDirectoryOptions,
-]
-  .map(esbuild.build))
+];
+
+Promise.all(ALL.map(esbuild.build))
   .then(() => zipBuildArtifacts())
   .catch(console.log);
