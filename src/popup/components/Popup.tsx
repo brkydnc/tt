@@ -39,6 +39,15 @@ export default function Popup(): JSX.Element {
   }
 
   useEffect(() => {
+    const storedDictionaryValue = localStorage.getItem("dictionary");
+    if (!storedDictionaryValue) return;
+
+    const storedDictionary = JSON.parse(storedDictionaryValue);
+    setDictionary(storedDictionary);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('dictionary', JSON.stringify(dictionary));
     search()
   }, [dictionary]);
 
