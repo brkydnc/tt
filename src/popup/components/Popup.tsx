@@ -1,10 +1,10 @@
+import { SuggestionTable } from "@/components/SuggestionTable";
+import { TranslationTable } from "@/components/TranslationTable";
 import { Tureng, TurengAPI } from "@api/tureng";
 import { Dictionary, SearchResult, SearchResultKind } from "@api/types";
-import { SuggestionTable as RawSuggestionTable, SuggestionTableProps } from "@/components/SuggestionTable";
-import { TranslationTable } from "@/components/TranslationTable";
-import React, { useEffect, useState } from "react";
-import { SearchPanel } from "./SearchPanel";
+import React, { ReactNode, useEffect, useState } from "react";
 import styles from '../styles/Popup.module.scss';
+import { SearchPanel } from "./SearchPanel";
 
 const TYPING_DELAY = 200;
 
@@ -15,7 +15,6 @@ export default function Popup(): JSX.Element {
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
   const [phrase, setPhrase] = useState('asdf');
   const [dictionary, setDictionary] = useState(Dictionary.Spanish);
-  const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
 
   // FIXME: If a request is slow enough, a second request may overlap with it.
@@ -25,23 +24,18 @@ export default function Popup(): JSX.Element {
     const trimmedPhrase = phrase.trim();
 
     if (!trimmedPhrase) {
-      setLoading(false);
       setFailed(false);
       return;
     };
 
     setFailed(false);
-    setLoading(true);
 
     tureng.search(trimmedPhrase, dictionary)
       .then(setSearchResult)
       .catch(error => {
         setFailed(true);
         console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      })
+      });
   }
 
   useEffect(() => {
@@ -63,32 +57,39 @@ export default function Popup(): JSX.Element {
         pronunciations={(searchResult?.kind === SearchResultKind.Translation) ? searchResult.data.pronunciations : []}
       />
 
-      {loading && <span>Loading...</span>}
-      {failed && <span>Error: couldn't load translations.</span>}
+      {
+        failed &&
+        <Feedback>Error: couldn't load translations.</Feedback>
+      }
 
       {
-        // If a request is loading, has failed, do not render the previous search result.
-        (!loading || failed) && <>
-          {searchResult?.kind === SearchResultKind.Translation && <TranslationTable variant="popup" {...searchResult.data} />}
-          {searchResult?.kind === SearchResultKind.Suggestion && <SuggestionTable {...{ ...searchResult.data, setPhrase }} />}
-          {searchResult?.kind === SearchResultKind.NotFound && <NotFound />}
+        !failed &&
+        <>
+          {
+            searchResult?.kind === SearchResultKind.Translation &&
+            <TranslationTable variant="popup" {...searchResult.data} />
+          }
+          {
+            searchResult?.kind === SearchResultKind.Suggestion &&
+            <>
+              <Feedback>Maybe the correct one is:</Feedback>
+              <SuggestionTable {...{ ...searchResult.data, setPhrase }} />
+            </>
+          }
+          {
+            searchResult?.kind === SearchResultKind.NotFound &&
+            <Feedback>Phrase not found.</Feedback>
+          }
         </>
       }
     </div>
   );
 }
 
-function SuggestionTable(props: SuggestionTableProps): JSX.Element {
+function Feedback(props: { children: ReactNode }): JSX.Element {
   return (
-    <>
-      <h4 className={styles.feedback}>Maybe the correct one is:</h4>
-      <RawSuggestionTable {...props} />
-    </>
-  );
-}
-
-function NotFound(): JSX.Element {
-  return (
-    <h4 className={styles.feedback}>Phrase not found</h4>
+    <h4 className={styles.feedback}>
+      {props.children}
+    </h4>
   );
 }
