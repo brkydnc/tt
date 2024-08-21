@@ -38,6 +38,7 @@ const commonOptions = {
   loader: {
     '.html': 'copy',
     '.ttf': 'copy',
+    '.png': 'copy',
   },
   assetNames: "[dir]/[name]",
   outbase: "src",
@@ -71,9 +72,18 @@ export const popupPageOptions = {
 
 export const optionsPageOption = {
   ...commonOptions,
-  entryNames: 'option/[name]',
+  entryNames: 'options/[name]',
   entryPoints: [
     "src/options/options.js",
     "src/options/options.html",
   ],
+}
+
+// Icons are not imported anywhere, so we define a rule for them.
+export const iconsDirectoryOptions = {
+  ...commonOptions,
+  entryNames: 'assets/icons/[name]',
+  entryPoints: [
+    "src/assets/icons/*",
+  ]
 }
