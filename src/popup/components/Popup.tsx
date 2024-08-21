@@ -13,8 +13,8 @@ const tureng = new Tureng() as TurengAPI;
 
 export default function Popup(): JSX.Element {
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
-  const [phrase, setPhrase] = useState('asdf');
-  const [dictionary, setDictionary] = useState(Dictionary.Spanish);
+  const [phrase, setPhrase] = useState('');
+  const [dictionary, setDictionary] = useState(Dictionary.Turkish);
   const [failed, setFailed] = useState(false);
 
   // FIXME: If a request is slow enough, a second request may overlap with it.

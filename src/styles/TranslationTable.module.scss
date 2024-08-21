@@ -4,7 +4,7 @@
   width: 100%;
   font-family: base.$font-family;
   color: base.$white;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .row {
@@ -22,12 +22,12 @@
   vertical-align: middle;
 
   * {
-    display: inline-block;
     margin-right: 5px;
   }
 }
 
 .badge {
+  display: inline-block;
   padding: 3px 7px;
   font-size: 12px;
   line-height: 1;

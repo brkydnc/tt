@@ -16,6 +16,7 @@ export function SearchPanel(props: SearchInputProps): JSX.Element {
   return (
     <div className={styles.container}>
       <input
+        autoFocus
         className={styles.input}
         autoComplete="off"
         placeholder="Translate..."
