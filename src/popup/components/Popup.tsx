@@ -13,7 +13,7 @@ const tureng = new Tureng() as TurengAPI;
 
 export default function Popup(): JSX.Element {
   const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
-  const [phrase, setPhrase] = useState('');
+  const [phrase, setPhrase] = useState('test');
   const [dictionary, setDictionary] = useState(Dictionary.Turkish);
   const [failed, setFailed] = useState(false);
 

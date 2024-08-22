@@ -1,5 +1,5 @@
-import { ElementNotFoundError } from "./errors";
-import { SearchResultKind, SearchResult, TranslationEntry, Pronunciation, Dictionary } from "./types";
+import { ElementNotFoundError, IncompatibilityError } from "./errors";
+import { SearchResultKind, SearchResult, TranslationEntry, Pronunciation, Dictionary, Accent } from "./types";
 import { parseFromString } from "../common/dom";
 
 // Fetches the document from the given dictionary and for the given phrase.
@@ -143,19 +143,25 @@ export function createPronunciations(audioContainers: Element[]): Pronunciation[
   return audioContainers.map(container => {
     const [audioElement, flagElement] = container.children;
     if (!audioElement || !flagElement) throw new ElementNotFoundError();
-    const flagSrc = getFlagURLByFlagElement(flagElement);
+    const accent = getAccentFromFlagElement(flagElement);
     const audioSrc = getAudioURLFromAudioElement(audioElement);
-    return { audioSrc, flagSrc }
+    return { audioSrc, accent }
   });
 }
 
-// A flag element has the attribute "data-accent".
-// A data accent has the format FROM_TO_FROM_accent (without underscores).
-// Examples: ENTRENus, ENTRENuk, ENFRFRfr, ENFRFRca.
-function getFlagURLByFlagElement(flagElement: Element): URL {
+function getAccentFromFlagElement(flagElement: Element): Accent {
   const dataAccent = flagElement.getAttribute("data-accent");
-  const accent = dataAccent?.substr(6, 2);
-  return new URL(`https://asset.tureng.co/images/flag-${accent}.png`);
+
+  if (!dataAccent)
+    throw new IncompatibilityError(`"data-accent" is not a valid attribute`);
+
+  const accentString = dataAccent.slice(6);
+  const accentIsValid = (Object.values(Accent) as string[]).includes(accentString);
+
+  if (!accentIsValid)
+    throw new IncompatibilityError(`Data accent "${accentString}" is not valid`);
+
+  return accentString as Accent;
 }
 
 // An audio element has a <source> in it, which is the first element child.

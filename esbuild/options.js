@@ -38,7 +38,7 @@ const commonOptions = {
   loader: {
     '.html': 'copy',
     '.ttf': 'copy',
-    '.png': 'copy',
+    ".png": "file",
   },
   assetNames: "[dir]/[name]",
   outbase: "src",
@@ -62,7 +62,7 @@ export const contentScriptOptions = {
 }
 
 export const popupPageOptions = {
-  ...contentScriptOptions,
+  ...commonOptions,
   entryNames: 'popup/[name]',
   entryPoints: [
     "src/popup/index.tsx",
@@ -85,5 +85,8 @@ export const iconsDirectoryOptions = {
   entryNames: 'assets/icons/[name]',
   entryPoints: [
     "src/assets/icons/*",
-  ]
+  ],
+  loader: {
+    ".png": "copy",
+  }
 }

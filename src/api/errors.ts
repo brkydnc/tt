@@ -1,3 +1,10 @@
+export class IncompatibilityError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "IncompatibilityError";
+  }
+}
+
 // Any breaking layout change visible to our extension must be handled
 // immediately, by hand. So in order to recognize changes easily, this 
 // exception should be thrown whenever a DOM element retrieval fails.
@@ -6,7 +13,7 @@
 // of "searchTerm". Consider the layout has changed and `getElementById("searchTerm")`
 // no longer returns a valid input field. At that moment, this error should be
 // thrown.
-export class ElementNotFoundError extends Error {
+export class ElementNotFoundError extends IncompatibilityError {
   constructor() {
     super("Element not found, DOM layout might have been changed.")
     this.name = "ElementNotFoundError";

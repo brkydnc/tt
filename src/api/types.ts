@@ -39,7 +39,7 @@ export interface Phrase {
 
 export interface Pronunciation {
   audioSrc: URL,
-  flagSrc: URL,
+  accent: Accent,
 }
 
 export enum Dictionary {

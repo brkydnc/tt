@@ -25,7 +25,6 @@ export function SearchPanel(props: SearchInputProps): JSX.Element {
       />
 
       <div className={styles.pronunciationContainer}>
-        {/* TODO: Use "accent" as key. */}
         {props.pronunciations.map(props => <Pronunciation {...props} />)}
       </div>
 
