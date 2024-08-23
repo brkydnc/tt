@@ -1,22 +1,24 @@
+import { Translation } from "@/api/types";
 import React from "react";
-import { Translation as PanelProps } from "@api/types";
 
-export default function Content(): JSX.Element {
-  return (<p>Content script has been injected.</p>);
+export interface PanelProps {
+  translation: Translation,
 }
 
-function Panel(props: PanelProps): JSX.Element {
+export function Panel({ translation }: PanelProps): JSX.Element {
   return (
     <div className="tureng-translate-panel">
       <div className="tureng-translate-container">
         <div className="tureng-translate-title">
-          {props.phrase}
+          {/* {props.phrase} */}
+          Phrase
         </div>
         <div className="tureng-translate-pronunciation-container">
           Pronunciations
         </div>
       </div>
       <div className="tureng-translate-table">
+        Table
       </div>
     </div>
   )

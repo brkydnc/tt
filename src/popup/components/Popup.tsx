@@ -1,3 +1,4 @@
+import { getLocalStorageOrDefaultDictionary, isPhraseWorthSearching, makeSearchPhrase, setLocalStorageDictionary } from "@/common/functions";
 import { SuggestionTable } from "@/components/SuggestionTable";
 import { TranslationTable } from "@/components/TranslationTable";
 import { Tureng, TurengAPI } from "@api/tureng";
@@ -17,20 +18,13 @@ export default function Popup(): JSX.Element {
   const [dictionary, setDictionary] = useState(Dictionary.Turkish);
   const [failed, setFailed] = useState(false);
 
-  // FIXME: If a request is slow enough, a second request may overlap with it.
-  // this means that setLoading() and setFailed() calls will overlap. And this
-  // behavior will cause a buggy view.
   const search = () => {
-    const trimmedPhrase = phrase.trim();
-
-    if (!trimmedPhrase) {
-      setFailed(false);
-      return;
-    };
+    const searchPhrase = makeSearchPhrase(phrase);
+    if (!isPhraseWorthSearching(searchPhrase)) return;
 
     setFailed(false);
 
-    tureng.search(trimmedPhrase, dictionary)
+    tureng.search(searchPhrase, dictionary)
       .then(setSearchResult)
       .catch(error => {
         setFailed(true);
@@ -39,15 +33,12 @@ export default function Popup(): JSX.Element {
   }
 
   useEffect(() => {
-    const storedDictionaryValue = localStorage.getItem("dictionary");
-    if (!storedDictionaryValue) return;
-
-    const storedDictionary = JSON.parse(storedDictionaryValue);
-    setDictionary(storedDictionary);
+    const initialDictionary = getLocalStorageOrDefaultDictionary();
+    setDictionary(initialDictionary);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('dictionary', JSON.stringify(dictionary));
+    setLocalStorageDictionary(dictionary);
     search()
   }, [dictionary]);
 

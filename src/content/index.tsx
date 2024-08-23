@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import Content from "./Content";
+import Content from "./components/Content";
 
 export const ROOT_ID = "__tureng-translate-root"
 
