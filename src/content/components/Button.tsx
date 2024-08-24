@@ -36,7 +36,7 @@ function reposition(
 
 export function Button({ position, onClick }: ButtonProps): JSX.Element {
   return (
-    <div onClick={onClick}>
+    <div onMouseDown={onClick}>
       Tureng Translate Button
     </div>
   );

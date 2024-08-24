@@ -34,6 +34,7 @@ const commonOptions = {
   bundle: true,
   sourcemap: true,
   minify: true,
+  metafile: true,
   plugins: [
     sassPlugin(esbuildSassPluginOptionsForScssModules),
   ],

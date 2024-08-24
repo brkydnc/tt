@@ -18,5 +18,12 @@ export const ALL = [
 ];
 
 Promise.all(ALL.map(esbuild.build))
+  .then(results => {
+    for (const result of results) {
+      esbuild.analyzeMetafile(result.metafile, { verbose: true })
+        .then(console.log)
+        .catch(console.log);
+    }
+  })
   .then(() => zipBuildArtifacts())
   .catch(console.log);

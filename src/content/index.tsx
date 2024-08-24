@@ -4,9 +4,11 @@ import Content from "./components/Content";
 
 import styles from './index.scss';
 
-export const CONTAINER_ID = "__tureng-translate-root"
+export const HOST_ID = "__tureng-translate-host"
+export const CONTAINER_ID = "__tureng-translate-container"
 
 const host = document.createElement('div');
+host.setAttribute("id", HOST_ID);
 document.body.appendChild(host);
 
 // Create a style sheet from the inline css string.

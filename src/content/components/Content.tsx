@@ -4,6 +4,7 @@ import { getLocalStorageOrDefaultDictionary, isPhraseWorthSearching, makeSearchP
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "./Button";
 import { Panel } from "./Panel";
+import { HOST_ID } from "..";
 
 export type Position = {
   x: number,
@@ -78,8 +79,10 @@ export default function Content(): JSX.Element {
 
   useEffect(() => {
     const handleMouseUp = (event: MouseEvent) => {
-      if (containerRef.current?.contains(event.target as (Node | null))) {
-        // Do not run this handler if clicked on the button or the panel.
+      // We don't want to run this handler if the event target is the button or the panel.
+      // Since they are in a shadow dom, the events are re-targetted, so in order to achieve
+      // what we want, we must check if the target id is equal to the shadow dom host.
+      if (event.target instanceof Element && event.target.id === HOST_ID) {
         return;
       } else {
         // Otherwise, hide the panel and the button.
@@ -103,14 +106,15 @@ export default function Content(): JSX.Element {
   }, []);
 
   const handleButtonClick = useCallback(() => {
+    console.log("here");
     if (!state.button) return;
     setState(transitionToPanelOpenState(state.translation, state.position));
   }, [state, setState]);
 
   return (
-    <div ref={containerRef}>
+    <>
       {state.button && <Button onClick={handleButtonClick} position={state.position} />}
       {state.panel && <Panel translation={state.translation} />}
-    </div>
+    </>
   )
 }
