@@ -1,4 +1,5 @@
 import { sassPlugin, postcssModules } from "esbuild-sass-plugin";
+
 import path from "node:path";
 
 export const PACKAGE_NAME = "tt.xpi";
@@ -9,18 +10,22 @@ export const makeProductionBuild = (options) => ({
   define: { "window.__IS_PRODUCTION_BUILD": "true" },
 });
 
-const sassPluginImportMappings = {
+const esbuildSassPluginImportMappings = {
   "@styles/": "./src/styles/",
   "@assets/": "./src/assets/",
 };
 
 // Resolve import aliases in SCSS files.
 const esbuildSassPluginImportMapper = importPath => {
-  for (const [k, v] of Object.entries(sassPluginImportMappings)) {
+  for (const [k, v] of Object.entries(esbuildSassPluginImportMappings)) {
     importPath = importPath.replace(k, path.resolve(process.cwd(), v) + "/");
   }
 
   return importPath;
+}
+const esbuildSassPluginOptionsForScssModules = {
+  transform: postcssModules({}),
+  importMapper: esbuildSassPluginImportMapper,
 }
 
 const commonOptions = {
@@ -30,10 +35,7 @@ const commonOptions = {
   sourcemap: true,
   minify: true,
   plugins: [
-    sassPlugin({
-      transform: postcssModules({}),
-      importMapper: esbuildSassPluginImportMapper,
-    }),
+    sassPlugin(esbuildSassPluginOptionsForScssModules),
   ],
   loader: {
     '.html': 'copy',
@@ -58,6 +60,16 @@ export const contentScriptOptions = {
   entryPoints: [
     "src/content/index.tsx",
     "src/content/index.html",
+  ],
+  plugins: [
+    sassPlugin({
+      filter: /index\.scss$/,
+      type: 'css-text',
+    }),
+    sassPlugin({
+      filter: /\.module\.scss$/,
+      ...esbuildSassPluginOptionsForScssModules,
+    }),
   ],
 }
 

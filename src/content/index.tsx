@@ -2,15 +2,26 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import Content from "./components/Content";
 
-export const ROOT_ID = "__tureng-translate-root"
+import styles from './index.scss';
 
-// Create a root to mount the extension interface.
-const rootContainer = document.createElement('div');
-rootContainer.setAttribute("id", ROOT_ID);
+export const CONTAINER_ID = "__tureng-translate-root"
 
-// Inject the root so that we can render the elements.
-document.body.appendChild(rootContainer);
+const host = document.createElement('div');
+document.body.appendChild(host);
 
-// Render it with React.
-const root = createRoot(rootContainer);
+// Create a style sheet from the inline css string.
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(styles);
+
+// Use a shadow dom to isolate the components and their styles 
+// from the page that they are going to be injected into.
+const shadow = host.attachShadow({ mode: "open" });
+shadow.adoptedStyleSheets = [sheet];
+
+const container = document.createElement('div');
+container.setAttribute("id", CONTAINER_ID);
+
+shadow.appendChild(container)
+
+const root = createRoot(container);
 root.render(<Content />);
