@@ -1,5 +1,6 @@
 import React from "react";
 import { Position } from "./Content";
+import styles from '../styles/styles.module.scss';
 
 export interface ButtonProps {
   position: Position,
@@ -36,7 +37,7 @@ function reposition(
 
 export function Button({ position, onClick }: ButtonProps): JSX.Element {
   return (
-    <div onMouseDown={onClick}>
+    <div onClick={onClick} className={styles.button}>
       Tureng Translate Button
     </div>
   );

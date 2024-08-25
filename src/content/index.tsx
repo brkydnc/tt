@@ -1,29 +1,50 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+
+import "scss-reset/total-reset.scss";
+
 import Content from "./components/Content";
+import { Showcase } from "./components/Showcase";
 
-import styles from './index.scss';
+export const HOST_ID = "__tureng-translate-host__"
+export const CONTAINER_ID = "__tureng-translate-container__"
 
-export const HOST_ID = "__tureng-translate-host"
-export const CONTAINER_ID = "__tureng-translate-container"
+async function init() {
+  const host = document.createElement('div');
+  host.setAttribute("id", HOST_ID);
+  document.body.appendChild(host);
 
-const host = document.createElement('div');
-host.setAttribute("id", HOST_ID);
-document.body.appendChild(host);
+  // TODO: Replace this with css bundle text (somehow).
+  // https://parceljs.org/features/bundle-inlining/
+  const cssFile = await fetch('/content/index.css');
+  const css = await cssFile.text();
 
-// Create a style sheet from the inline css string.
-const sheet = new CSSStyleSheet();
-sheet.replaceSync(styles);
+  // Create a style sheet from the inline css string.
+  const sheet = new CSSStyleSheet();
+  sheet.replaceSync(css);
 
-// Use a shadow dom to isolate the components and their styles 
-// from the page that they are going to be injected into.
-const shadow = host.attachShadow({ mode: "open" });
-shadow.adoptedStyleSheets = [sheet];
+  // Use a shadow dom to isolate the components and their styles 
+  // from the page that they are going to be injected into.
+  const shadow = host.attachShadow({ mode: "open" });
+  shadow.adoptedStyleSheets = [sheet];
 
-const container = document.createElement('div');
-container.setAttribute("id", CONTAINER_ID);
+  const container = document.createElement('div');
+  container.setAttribute("id", CONTAINER_ID);
 
-shadow.appendChild(container)
+  shadow.appendChild(container)
 
-const root = createRoot(container);
-root.render(<Content />);
+  const root = createRoot(container);
+
+  if (__SANDBOX__) {
+    root.render(
+      <>
+        <Showcase />
+        <Content />
+      </>
+    )
+  } else {
+    root.render(<Content />);
+  }
+}
+
+init();

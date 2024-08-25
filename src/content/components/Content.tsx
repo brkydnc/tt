@@ -64,7 +64,6 @@ const tureng: TurengAPI = new Tureng();
 export default function Content(): JSX.Element {
   const [state, setState] = useState<ButtonAndPanelState>(transitionToClosedState());
   const lastSelectionIdRef = useRef<number>(0);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const searchSelection = useCallback(async (context: SelectionContext) => {
     const dictionary: Dictionary = getLocalStorageOrDefaultDictionary();
@@ -106,7 +105,6 @@ export default function Content(): JSX.Element {
   }, []);
 
   const handleButtonClick = useCallback(() => {
-    console.log("here");
     if (!state.button) return;
     setState(transitionToPanelOpenState(state.translation, state.position));
   }, [state, setState]);

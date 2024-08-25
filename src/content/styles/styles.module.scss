@@ -1,0 +1,18 @@
+@use "@styles/base";
+
+.button {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  border: 1px solid var(--tureng-translate-button-border);
+  position: fixed;
+  z-index: 2147483647;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.18),
+    0 2px 2px rgba(0, 0, 0, 0.18),
+    0 4px 4px rgba(0, 0, 0, 0.18),
+    0 6px 8px rgba(0, 0, 0, 0.18),
+    0 8px 16px rgba(0, 0, 0, 0.18);
+}

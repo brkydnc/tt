@@ -5,11 +5,6 @@ import path from "node:path";
 export const PACKAGE_NAME = "tt.xpi";
 export const OUT_DIR = "build";
 
-export const makeProductionBuild = (options) => ({
-  ...options,
-  define: { "window.__IS_PRODUCTION_BUILD": "true" },
-});
-
 const esbuildSassPluginImportMappings = {
   "@styles/": "./src/styles/",
   "@assets/": "./src/assets/",
@@ -34,7 +29,14 @@ const commonOptions = {
   bundle: true,
   sourcemap: true,
   minify: true,
+  treeShaking: true,
   metafile: true,
+  assetNames: "[dir]/[name]",
+  outbase: "src",
+  define: {
+    "__DEBUG__": "true",
+    "__SANDBOX__": "true",
+  },
   plugins: [
     sassPlugin(esbuildSassPluginOptionsForScssModules),
   ],
@@ -43,8 +45,6 @@ const commonOptions = {
     '.ttf': 'copy',
     ".png": "file",
   },
-  assetNames: "[dir]/[name]",
-  outbase: "src",
 }
 
 export const backgroundScriptOptions = {
@@ -61,16 +61,6 @@ export const contentScriptOptions = {
   entryPoints: [
     "src/content/index.tsx",
     "src/content/index.html",
-  ],
-  plugins: [
-    sassPlugin({
-      filter: /index\.scss$/,
-      type: 'css-text',
-    }),
-    sassPlugin({
-      filter: /\.module\.scss$/,
-      ...esbuildSassPluginOptionsForScssModules,
-    }),
   ],
 }
 
