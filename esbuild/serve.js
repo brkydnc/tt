@@ -17,18 +17,17 @@ if (!TARGET_OPTIONS) {
   TARGET_OPTIONS = popupPageOptions;
 }
 
-esbuild.context(TARGET_OPTIONS)
-  .then(context => {
-    context.watch();
-    console.log("Watching files...");
-    return context;
-  })
-  .then(context => context.serve({
-    servedir: OUT_DIR
-  }))
-  .then(({ host, port }) => {
-    const url = `http://${host}:${port}`;
-    console.log(`Serving files at ${url}`);
-    open(`${url}/${TARGET}/index.html`);
-  })
-  .catch(console.log);
+async function serve() {
+  const context = await esbuild.context(TARGET_OPTIONS);
+
+  await context.watch();
+  console.log("Watching files...");
+
+  const { host, port } = await context.serve({ servedir: OUT_DIR });
+  const url = `http://${host}:${port}`;
+  console.log(`Serving files at ${url}`);
+
+  open(`${url}/${TARGET}/index.html`);
+}
+
+serve().catch(console.error);
