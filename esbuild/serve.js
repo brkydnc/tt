@@ -1,6 +1,6 @@
 import esbuild from 'esbuild';
-import { popupPageOptions, OUT_DIR, optionsPageOption, backgroundScriptOptions, contentScriptOptions } from './options.js';
 import open from 'open';
+import { OUT_DIR, backgroundScriptOptions, contentScriptOptions, optionsPageOption, popupPageOptions } from './options.js';
 
 const TARGET_OPTIONS_INDEX = {
   "popup": popupPageOptions,

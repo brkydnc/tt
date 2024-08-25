@@ -1,5 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import browser from 'webextension-polyfill';
 
 import "scss-reset/total-reset.scss";
 
@@ -14,14 +15,21 @@ async function init() {
   host.setAttribute("id", HOST_ID);
   document.body.appendChild(host);
 
-  // TODO: Replace this with css bundle text (somehow).
-  // https://parceljs.org/features/bundle-inlining/
-  const cssFile = await fetch('/content/index.css');
-  const css = await cssFile.text();
-
   // Create a style sheet from the inline css string.
   const sheet = new CSSStyleSheet();
-  sheet.replaceSync(css);
+
+  // TODO: Replace this with css bundle text (somehow).
+  // https://parceljs.org/features/bundle-inlining/
+  if (__SANDBOX__) {
+    const cssFile = await fetch('/content/index.css');
+    const css = await cssFile.text();
+    sheet.replaceSync(css);
+  } else {
+    const url = browser.runtime.getURL('content/index.css');
+    const cssFile = await fetch(url);
+    const css = await cssFile.text();
+    sheet.replaceSync(css);
+  }
 
   // Use a shadow dom to isolate the components and their styles 
   // from the page that they are going to be injected into.

@@ -1,7 +1,6 @@
-import { ALL, zipBuildArtifacts } from './build.js';
+import chokidar from 'chokidar';
 import esbuild from 'esbuild';
-import { popupPageOptions } from './options.js';
-import chokidar, { watch } from 'chokidar';
+import { ALL, zipBuildArtifacts } from './build.js';
 
 const contexts = await Promise.all(ALL.map(esbuild.context));
 

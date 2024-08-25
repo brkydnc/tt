@@ -34,14 +34,11 @@
       ],
       "js": [
         "content/index.js"
-      ],
-      "css": [
-        "content/index.css"
       ]
     }
   ],
   "web_accessible_resources": [
-    "assets/icons/tt-32.png"
+    "content/index.css"
   ],
   "commands": {
     "_execute_browser_action": {

@@ -4,6 +4,8 @@ import path from "node:path";
 
 export const PACKAGE_NAME = "tt.xpi";
 export const OUT_DIR = "build";
+export const DEBUG = process.env.DEBUG === "true";
+export const SANDBOX = process.env.SANDBOX === "true";
 
 const esbuildSassPluginImportMappings = {
   "@styles/": "./src/styles/",
@@ -34,8 +36,8 @@ const commonOptions = {
   assetNames: "[dir]/[name]",
   outbase: "src",
   define: {
-    "__DEBUG__": "true",
-    "__SANDBOX__": "true",
+    "__DEBUG__": DEBUG ? "true" : "false",
+    "__SANDBOX__": SANDBOX ? "true" : "false",
   },
   plugins: [
     sassPlugin(esbuildSassPluginOptionsForScssModules),
